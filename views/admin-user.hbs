@@ -1,0 +1,60 @@
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="container d-flex justify-content-end mt-2 mb-5">
+                {{!-- <a href="/admin/add-user" class="btn btn-success mx-3">Add User</a> --}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table id="example" class="table table-striped nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">Username</th>
+                            <th class="text-center" scope="col">Email</th>
+                            <th class="text-center" scope="col">Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each users}}
+                        <tr>
+                            <td>{{this.name}}</td>
+                            <td class="text-center">{{this.email}}</td>
+                            {{#if this.isBlocked}}
+                            <td class="text-center">
+                                <a href="/admin/users/unblock-user/{{this._id}}" class="btn btn-success"
+                                    onclick="return confirm('Are you sure you want to unblock user {{this.uName}}')">unBlock</a>
+                            </td>
+                            {{else}}
+                            <td class="text-center">
+                                <a href="/admin/users/block-user/{{this._id}}" class="btn btn-danger"
+                                    onclick="return confirm('Are you sure you want to block user {{this.uName}}">Block</a>
+                            </td>
+                            {{/if}}
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.modal({
+                        header: function (row) {
+                            var data = row.data();
+                            return 'Details for ' + data[0] + ' ' + data[1];
+                        }
+                    }),
+                    renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                        tableClass: 'table'
+                    })
+                }
+            }
+        });
+    });
+</script>

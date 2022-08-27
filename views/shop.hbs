@@ -1,0 +1,46 @@
+<section style="background-color: #eee;">
+    <div class="container py-5">
+        <div class="row">
+            {{#each products}}
+            <div class="col-md-6 col-lg-4 mb-4 mb-md-0 mt-3">
+                <div class="card">
+                    {{!-- <div class="d-flex justify-content-between p-3">
+                        <p class="lead mb-0">Today's Combo Offer</p>
+                        <div class="bg-info rounded-circle d-flex align-items-center justify-content-center shadow-1-strong"
+                            style="width: 35px; height: 35px;">
+                            <p class="text-white mb-0 small">x3</p>
+                        </div>
+                    </div> --}}
+                    <a class="text-center mt-1" href="/shop/product-details/{{this._id}}">
+                        <img src="/product-images/{{this._id}}.jpg"  alt="Gaming Laptop"
+                            style="width:auto;height: 200px;" />
+                    </a>
+
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <p class="small"><a href="#!" class="text-muted">{{this.category}}</a></p>
+                            <p class="small text-danger"><s>Rs 2000</s></p>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="mb-0">{{this.pName}}</h5>
+                            <h5 class="text-dark mb-0">Rs {{this.price}}</h5>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <p class="text-muted mb-0">Available: <span class="fw-bold">5</span></p>
+                            <div class="ms-auto text-warning">
+                                <i class="fa fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</section>

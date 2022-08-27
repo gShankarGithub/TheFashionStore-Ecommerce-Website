@@ -1,0 +1,52 @@
+<section class="vh-100 bg-image"
+  style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+              <h2 class="text-uppercase text-center mb-5">Edit Product</h2>
+              <form action="/admin/products/edit-product/{{product._id}}" method="POST" class="pt-3"
+                enctype="multipart/form-data">
+                <div class="form-group">
+                  <input type="text" name="pName" class="form-control mb-4" placeholder="Product Name"
+                    value="{{product.pName}}">
+                </div>
+                <div class="form-group">
+                  <select class="form-select" aria-label="Default select example" name="category">
+                    <option selected>{{product.category}}</option>
+                    {{#each categories}}
+                    <option value="{{this.categoryName}}">{{this.categoryName}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+                <div class="form-group">
+                  <input type="text" name="price" class="form-control mb-4" placeholder="Product Price"
+                    value="{{product.price}}">
+                </div>
+                <div class="form-group">
+                  <input type="text" name="description" class="form-control mb-4" placeholder="Description"
+                    value="{{product.description}}">
+                </div>
+                <div class="form-group">
+                  <img class="pt-3" src="/product-images/{{product._id}}.jpg" alt="" id="imgView"
+                    style="width: 100px;height:auto">
+                  <input type="file" class="form-control mb-4" name="pImage" onchange="viewImage(event)">
+                </div>
+                <button type="submit" class="btn btn-success rounded-pill">Add Product</button>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function viewImage(event) {
+    document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+  }
+</script>
