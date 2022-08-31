@@ -3,19 +3,32 @@ var router = express.Router();
 var userHelper = require('../helpers/user-helpers')
 var adminHelper = require('../helpers/admin-helpers')
 
+
 const serviceSID = "VA464df13e96e261c09240e9e5d16bc514"
 const accountSID = "ACd9861b7ef28f4c277b12a711ef740444"
 const authToken = "1b60bd11192e9f4c31b2ee12fc750a43"
 const client = require('twilio')(accountSID, authToken)
 
+
+const verifyLogin = (req,res,next)=>{
+  if(req.session.user){
+    next()
+  }else{
+    res.redirect('/login')
+  }
+}
+
+//////////////////////////Login And Signup///////////////////////////////
+
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', async function (req, res, next) {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
+  let categories = await adminHelper.getAllCategory()
   if (req.session.user) {
     let user = req.session.username
-    res.render('index', { admin: false, user });
+    res.render('index', { admin: false, user ,categories});
   } else {
-    res.render('index', { admin: false })
+    res.render('index', { admin: false,categories })
   }
 })
 router.get('/login', (req, res) => {
@@ -31,11 +44,6 @@ router.get('/login', (req, res) => {
 router.post('/login', (req, res) => {
   userHelper.doLogin(req.body).then((response) => {
     if (response.status) {
-      if (response.user.isAdmin) {
-        req.session.adminname = response.user
-        req.session.admin = true
-        res.redirect('/admin')
-      } else {
         if (response.user.isBlocked) {
           req.session.userLoginErr = "User Is Blocked"
           res.redirect('/login')
@@ -44,7 +52,6 @@ router.post('/login', (req, res) => {
           req.session.user = true
           res.redirect("/")
         }
-      }
     } else {
       req.session.userLoginErr = "Invalid Username And Password"
       res.redirect('/login')
@@ -113,19 +120,52 @@ router.post('/signup', (req, res) => {
   })
 })
 
+///////////////////////Shop, ProductList & Product Details///////////////////////////////////////
+
 router.get('/productdetails', (req, res) => {
   res.render('productdetails')
 })
 
-router.get('/shop', (req, res) => {
+router.get('/shop', async (req, res) => {
   let user = req.session.username
+  let categories = await adminHelper.getAllCategory()
   adminHelper.getAllProducts().then((products) => {
-    res.render('shop', { products, user })
+    res.render('shop', { products, user ,categories})
   })
 })
 
 router.get('/shop/product-details/:id', async (req, res) => {
+  let user = req.session.username
+  let categories = await adminHelper.getAllCategory()
   let product = await adminHelper.getProductDetails(req.params.id)
-  res.render('productdetails', { product })
+  res.render('productdetails', { product,user,categories })
 })
+
+////////////////////Category//////////////////////
+
+router.get('/category/:categoryName',async(req,res)=>{
+  let user = req.session.username
+  let categories = await adminHelper.getAllCategory()
+  let category = req.params.categoryName
+  userHelper.findProductCategory(category).then((product)=>{
+    res.render('categories',{product,category,categories,user})
+  })
+})
+
+
+/////////////////////////////////////////Cart////////////////////////////////////////////////////////////
+router.get('/cart',verifyLogin,async(req,res)=>{
+  let products= await userHelper.getCartProducts(req.session.username._id)
+  console.log(products);
+  res.render('cart')
+})
+
+router.get('/add-to-cart/:id',verifyLogin,(req,res)=>{
+  userHelper.addToCart(req.params.id,req.session.username._id).then(()=>{
+    res.redirect('/cart')
+  })
+})
+
+
+
 module.exports = router;

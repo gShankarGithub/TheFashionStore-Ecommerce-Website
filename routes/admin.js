@@ -2,20 +2,48 @@ const e = require('express');
 var express = require('express');
 var router = express.Router();
 var adminHelper = require('../helpers/admin-helpers')
+var userHelper = require('../helpers/user-helpers')
 
 /* GET users listing. */
+
+router.get('/login', (req, res) => {
+  res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
+  if (req.session.admin == true){
+    res.redirect('/admin')
+  }else {
+    var loginErr = req.session.adminLoginErr
+    res.render('admin-login', { adminLogin: true ,loginErr})
+  }
+  
+})
+
+router.post('/login',(req,res)=>{
+  userHelper.doLogin(req.body).then((response)=>{
+    if (response.adminStatus) {
+      req.session.adminname = response.user
+      req.session.admin = true
+      res.redirect('/admin')
+    }else {
+      req.session.adminLoginErr = "Invalid Username And Password"
+      res.redirect('/admin/login')
+    }
+  })
+  
+})
+
+
 router.get('/', function (req, res, next) {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
   if (req.session.admin == true) {
     res.render('admin', { admin: true })
   } else {
-    res.redirect('/')
+    res.redirect('/admin/login')
   }
 });
 
 router.get('/logout', (req, res) => {
   req.session.admin = null
-  res.redirect('/')
+  res.redirect('/admin/login')
 })
 
 ///////////////////////////USERS//////////////////////////////////////
@@ -26,7 +54,7 @@ router.get('/users', (req, res) => {
       res.render('admin-user', { admin: true, users })
     })
   } else {
-    res.redirect('/')
+    res.redirect('/admin/login')
   }
 })
 
@@ -50,7 +78,7 @@ router.get('/products', (req, res) => {
       res.render('admin-product', { admin: true, products })
     })
   } else {
-    res.redirect('/login')
+    res.redirect('/admin/login')
   }
 })
 
@@ -63,25 +91,25 @@ router.get('/add-product', (req, res) => {
 
 router.post('/add-product', (req, res) => {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
-  if(req.files){
+  if (req.files) {
     if (req.session.admin == true) {
       adminHelper.addProduct(req.body, (id) => {
-          let image = req.files.pImage
-          image.mv('./public/product-images/' + id + '.jpg', (err, done) => {
-            if (!err) {
-              res.redirect("/admin/products")
-            } else {
-              console.log(err);
-            }
-          })
+        let image = req.files.pImage
+        image.mv('./public/product-images/' + id + '.jpg', (err, done) => {
+          if (!err) {
+            res.redirect("/admin/products")
+          } else {
+            console.log(err);
+          }
+        })
       })
     } else {
-      res.redirect('/login')
+      res.redirect('/admin/login')
     }
-  }else{
+  } else {
     res.redirect('/admin/add-product')
   }
-  
+
 
 })
 
@@ -130,7 +158,7 @@ router.post('/categories/addcategory', (req, res) => {
       })
     })
   } else {
-    res.redirect('/')
+    res.redirect('/admin/login')
   }
 })
 
@@ -141,7 +169,7 @@ router.get('/categories', (req, res) => {
       res.render('admin-categories', { admin: true, category })
     })
   } else {
-    res.redirect('/')
+    res.redirect('/admin/login')
   }
 })
 

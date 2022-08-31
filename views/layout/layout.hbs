@@ -31,15 +31,18 @@
     <script src="https://cdn.datatables.net/responsive/2.3.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.3.0/js/responsive.bootstrap5.min.js"></script>
 
-
+    {{#unless adminLogin}}
     {{#if admin}}
     {{>admin-header}}
     {{else}}
     {{>user-header}}
     {{/if}}
+    {{/unless}}
     {{{body}}}
+    {{#unless adminLogin}}
     {{#unless admin}}
     {{>user-footer}}
+    {{/unless}}
     {{/unless}}
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
