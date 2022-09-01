@@ -27,7 +27,8 @@
                         <td>{{this.description}}</td>
                         <td>{{this.price}}</td>
                         <td><img style="width: 50px;height: 50px;" src="/product-images/{{this._id}}.jpg" alt=""></td>
-                        <td class="text-center"><a href="/admin/products/edit-product/{{this._id}}" class="btn btn-primary">Edit</a>
+                        <td class="text-center"><a href="/admin/products/edit-product/{{this._id}}"
+                                class="btn btn-primary">Edit</a>
                             <a href="/admin/products/delete-product/{{this._id}}" class="btn btn-danger"
                                 onclick="return confirm('Are you sure you want to delete {{this.pName}}')">Delete</a>
                         </td>
