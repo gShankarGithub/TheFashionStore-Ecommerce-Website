@@ -166,18 +166,36 @@ router.get('/category/:categoryName', async (req, res) => {
 /////////////////////////////////////////Cart////////////////////////////////////////////////////////////
 
 router.get('/add-to-cart/:id', verifyLogin, (req, res) => {
-  console.log("call kitti");
   userHelper.addToCart(req.params.id, req.session.username._id).then(() => {
     res.json({status:true})
   })
 })
 
-router.get('/cart', async (req, res) => {
+router.get('/cart', verifyLogin,async (req, res) => {
   let user = req.session.username
+  let total  = await userHelper.getTotalAmount(req.session.username._id)
   let products = await userHelper.getCartProducts(req.session.username._id)
-  console.log(products);
-  res.render('cart', { products, user })
+  res.render('cart', { products, user ,total})
 })
 
+router.post('/change-product-quantity',(req,res,next)=>{
+  userHelper.changeProductQuantity(req.body).then((response)=>{
+    res.json(response)
+  })
+})
+
+router.get('/place-order',verifyLogin,async (req,res)=>{
+  let total  = await userHelper.getTotalAmount(req.session.username._id)
+  let user = req.session.username
+  res.render('place-order',{user,total})
+})
+
+router.get('/complete',(req,res)=>{
+  res.send('Complete')
+})
+
+router.post('/complete',(req,res)=>{
+  res.send('complete')
+})
 
 module.exports = router;
