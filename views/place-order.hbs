@@ -51,38 +51,35 @@
                                     </div>
                                     <hr class="my-4">
                                     <div>
-                                        <form action="/complete" method="post">
+                                        <form id="checkout-form" action="/complete" method="post">
                                             <div class="mb-3">
                                                 <label for="exampleInputAddress" class="form-label">Address</label>
-                                                <input type="text" class="form-control" id="exampleInputAddress"
-                                                    aria-describedby="emailHelp">
+                                                <input type="text" class="form-control" id="exampleInputAddress" name="address">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="exampleInputPincode" class="form-label">Pincode</label>
-                                                <input type="text" class="form-control" id="exampleInputPincode">
+                                                <input type="text" class="form-control" id="exampleInputPincode" name="pincode">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="exampleInputMobile" class="form-label">Mobile</label>
-                                                <input type="text" class="form-control" id="exampleInputMobile">
+                                                <input type="text" class="form-control" id="exampleInputMobile" name="mobile">
                                             </div>
+                                            <input type="text" name="userId" id="" value="{{user._id}}" hidden>
                                     </div>
-
-
-
                                 </div>
                             </div>
                             <div class="col-lg-4 bg-grey">
                                 <div class="p-5">
                                     <h5 class="text-uppercase">Payment Method</h5>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                            id="flexRadioDefault1">
+                                        <input class="form-check-input" type="radio" name="payment-method"
+                                            id="flexRadioDefault1" value="COD">
                                         <label class="form-check-label" for="flexRadioDefault1">
                                             Cash On Delivery
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                        <input class="form-check-input" type="radio" name="payment-method" value="ONLINE"
                                             id="flexRadioDefault2" checked>
                                         <label class="form-check-label" for="flexRadioDefault2">
                                             Card Payment
@@ -107,3 +104,17 @@
         </div>
     </div>
 </section>
+
+<script>
+    $("#checkout-form").submit((e)=>{
+        e.preventDefault()
+        $.ajax({
+            url:'/place-order',
+            method:'post',
+            data:$('#checkout-form').serialize(),
+            success:(response)=>{
+                alert(response)
+            }
+        })
+    })
+</script>

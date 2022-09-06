@@ -179,7 +179,10 @@ router.get('/cart', verifyLogin,async (req, res) => {
 })
 
 router.post('/change-product-quantity',(req,res,next)=>{
-  userHelper.changeProductQuantity(req.body).then((response)=>{
+  userHelper.changeProductQuantity(req.body).then(async(response)=>{
+    let total  = await userHelper.getTotalAmount(req.body.user)
+ 
+    response.total = total
     res.json(response)
   })
 })
@@ -196,6 +199,13 @@ router.get('/complete',(req,res)=>{
 
 router.post('/complete',(req,res)=>{
   res.send('complete')
+})
+router.post('/place-order',async(req,res)=>{
+  let products = await userHelper.getCartProductList(req.body.userId)
+  let totalPrice = await userHelper.getTotalAmount(req.body.userId)
+  userHelper.placeOrder(req.body,products,totalPrice).then((response)=>{
+    res.json({status:true})
+  })
 })
 
 module.exports = router;
