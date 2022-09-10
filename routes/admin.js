@@ -95,13 +95,16 @@ router.post('/add-product', (req, res) => {
     if (req.session.admin == true) {
       adminHelper.addProduct(req.body, (id) => {
         let image = req.files.pImage
-        image.mv('./public/product-images/' + id + '.jpg', (err, done) => {
+
+        
+        image?.mv('./public/product-images/' + id + '.jpg', (err, done) => {
           if (!err) {
             res.redirect("/admin/products")
           } else {
             console.log(err);
           }
         })
+        
       })
     } else {
       res.redirect('/admin/login')
@@ -179,4 +182,12 @@ router.get('/categories/delete-category/:id', (req, res) => {
     res.redirect('/admin/categories')
   })
 })
+
+///////////////////////////////////////////Orders///////////////////////////////////////////
+
+router.get('/orders',(req,res)=>{
+  let products = userHelper.getAllOrders()
+})
+
+
 module.exports = router;

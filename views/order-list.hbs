@@ -1,0 +1,63 @@
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="container d-flex justify-content-end mt-2 mb-5">
+                {{!-- <a href="/admin/add-user" class="btn btn-success mx-3">Add User</a> --}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table id="example" class="table table-striped nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th class="text-center" scope="col">Address</th>
+                            {{!-- <th class="text-center" scope="col">Pincode</th> --}}
+                            <th class="text-center" scope="col">Mobile</th>
+                            <th class="text-center" scope="col">Amount</th>
+                            <th class="text-center" scope="col">Payment</th>
+                            <th class="text-center" scope="col">Status</th>
+                            <th class="text-center" scope="col">Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each orders}}
+                        <tr>
+                            <td >{{this.date}}</td>
+                            <td class="text-center">{{this.deliveryDetails.address}}</td>
+                            {{!-- <td class="text-center">{{this.deliveryDetails.pincode}}</td> --}}
+                            <td class="text-center">{{this.deliveryDetails.mobile}}</td>
+                            <td class="text-center">{{this.totalAmount}}</td>
+                            <td class="text-center">{{this.paymentMethod}}</td>
+                            <td class="text-center">{{this.status}}</td>           
+                            <td class="text-center">
+                                <a href="/orders/products/{{this._id}}" class="btn btn-success">All Products</a>
+                                <a href="/orders/products/{{this._id}}" class="btn btn-danger">Cancel Order</a>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.modal({
+                        header: function (row) {
+                            var data = row.data();
+                            return 'Details for ' + data[0] + ' ' + data[1];
+                        }
+                    }),
+                    renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                        tableClass: 'table'
+                    })
+                }
+            }
+        });
+    });
+</script>
