@@ -1,13 +1,13 @@
 <section>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="container d-flex justify-content-end mt-2 mb-5">
+            <div class="container d-flex justify-content-end mt-0 mb-5">
                 {{!-- <a href="/admin/add-user" class="btn btn-success mx-3">Add User</a> --}}
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <table id="example" class="table table-striped nowrap" style="width:100%">
+                <table id="example" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
                             <th scope="col">Date</th>
@@ -16,23 +16,94 @@
                             <th class="text-center" scope="col">Mobile</th>
                             <th class="text-center" scope="col">Amount</th>
                             <th class="text-center" scope="col">Payment</th>
-                            <th class="text-center" scope="col">Status</th>
                             <th class="text-center" scope="col">Options</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#each orders}}
                         <tr>
-                            <td >{{this.date}}</td>
+                            <td>{{this.date}}</td>
                             <td class="text-center">{{this.deliveryDetails.address}}</td>
                             <td class="text-center">{{this.deliveryDetails.pincode}}</td>
                             <td class="text-center">{{this.deliveryDetails.mobile}}</td>
                             <td class="text-center">{{this.totalAmount}}</td>
                             <td class="text-center">{{this.paymentMethod}}</td>
-                            <td class="text-center">{{this.status}}</td>           
+                            {{#ifEquals this.status 'cancelled'}}
+                            <td class="text-center">{{this.status}}</td>
+                            {{/ifEquals}}
+                            {{#unlessEquals this.status 'cancelled'}}
                             <td class="text-center">
-                                <a href="/orders/products/{{this._id}}" class="btn btn-success">All Products</a>
+                                {{#ifEquals this.status 'pending'}}
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        {{this.status}}
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a onclick="changeOrderStatus('{{this._id}}','placed')" class="dropdown-item"
+                                            href="#">Placed</a>
+                                        <a onclick="changeOrderStatus('{{this._id}}','shipped')" class="dropdown-item"
+                                            href="#">Shipped</a>
+                                        <a onclick="changeOrderStatus('{{this._id}}','outfordelivery')"
+                                            class="dropdown-item" href="#">Out For Delivery</a>
+                                        <a onclick="changeOrderStatus('{{this._id}}','delivered')" class="dropdown-item"
+                                            href="#">Delivered</a>
+                                    </div>
+                                </div>
+                                {{/ifEquals}}
+                                {{#ifEquals this.status 'placed'}}
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        {{this.status}}
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a onclick="changeOrderStatus('{{this._id}}','shipped')" class="dropdown-item"
+                                            href="#">Shipped</a>
+                                        <a onclick="changeOrderStatus('{{this._id}}','outfordelivery')"
+                                            class="dropdown-item" href="#">Out For Delivery</a>
+                                        <a onclick="changeOrderStatus('{{this._id}}','delivered')" class="dropdown-item"
+                                            href="#">Delivered</a>
+                                    </div>
+                                </div>
+                                {{/ifEquals}}
+                                {{#ifEquals this.status 'shipped'}}
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        {{this.status}}
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a onclick="changeOrderStatus('{{this._id}}','outfordelivery')"
+                                            class="dropdown-item" href="#">Out For Delivery</a>
+                                        <a onclick="changeOrderStatus('{{this._id}}','delivered')" class="dropdown-item"
+                                            href="#">Delivered</a>
+                                    </div>
+                                </div>
+                                {{/ifEquals}}
+                                {{#ifEquals this.status 'outfordelivery'}}
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        {{this.status}}
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a onclick="changeOrderStatus('{{this._id}}','delivered')" class="dropdown-item"
+                                            href="#">Delivered</a>
+                                    </div>
+                                </div>
+                                {{/ifEquals}}
+                                {{#ifEquals this.status 'delivered'}}
+                                {{this.status}}
+                                {{/ifEquals}}
+
                             </td>
+                            {{/unlessEquals}}
+
                         </tr>
                         {{/each}}
                     </tbody>
@@ -59,4 +130,18 @@
             }
         });
     });
+
+    function changeOrderStatus(orderId, status) {
+        $.ajax({
+            url: '/admin/orders/change-order-status',
+            data: {
+                order: orderId,
+                status: status,
+            },
+            method: 'post',
+            success: (response) => {
+                location.reload()
+            }
+        })
+    }
 </script>

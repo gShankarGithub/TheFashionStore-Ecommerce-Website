@@ -173,35 +173,45 @@ router.get('/add-to-cart/:id', verifyLogin, (req, res) => {
 
 router.get('/cart', verifyLogin,async (req, res) => {
   let user = req.session.username
+  let categories = await adminHelper.getAllCategory()
   let total = 0
   let products = await userHelper.getCartProducts(req.session.username._id)
   if(products.length>0){
     total  = await userHelper.getTotalAmount(req.session.username._id)
+    res.render('cart', { products, user ,total,categories})
+  }else{
+    res.render('empty-cart',{user,categories})
   }
-  res.render('cart', { products, user ,total})
+  
 })
 
 router.post('/change-product-quantity',(req,res,next)=>{
   userHelper.changeProductQuantity(req.body).then(async(response)=>{
-    let total  = await userHelper.getTotalAmount(req.body.user)
- 
-    response.total = total
+    if(response.status){
+      let total  = await userHelper.getTotalAmount(req.body.user)
+      response.total = total
+    }
+    res.json(response)
+  })
+})
+
+router.post('/remove-cart-item',(req,res)=>{
+  userHelper.removeCartItem(req.body).then((response)=>{
     res.json(response)
   })
 })
 
 router.get('/place-order',verifyLogin,async (req,res)=>{
   let products = await userHelper.getCartProducts(req.session.username._id)
+  let categories = await adminHelper.getAllCategory()
   let total =0
   if(products.length>0){
     total  = await userHelper.getTotalAmount(req.session.username._id)
     let user = req.session.username
-    res.render('place-order',{user,total})
+    res.render('place-order',{user,total,categories})
   }else {
     res.redirect('/cart')
   }
-  
-
 })
 
 router.post('/place-order',async(req,res)=>{
@@ -216,24 +226,31 @@ router.post('/place-order',async(req,res)=>{
   })
 })
 
-router.get('/place-order/order-success',verifyLogin,(req,res)=>{
+router.get('/place-order/order-success',verifyLogin,async(req,res)=>{
   let user = req.session.username
-  res.render('order-success',{user})
+  let categories = await adminHelper.getAllCategory()
+  res.render('order-success',{user,categories})
 })
 
 router.get('/orders',verifyLogin, async(req,res)=>{
   let user = req.session.username
+  let categories = await adminHelper.getAllCategory()
   let userId = req.session.username._id
   let orders = await userHelper.getAllOrders(userId)
-  res.render('order-list',{orders,user})
+  res.render('order-list',{orders,user,categories})
 })
 
 router.get('/orders/products/:id',verifyLogin,async(req,res)=>{
   let orderId = req.params.id
+  let categories = await adminHelper.getAllCategory()
   let products = await userHelper.getAllProductsOfOrder(orderId)
-  console.log(products);
   let user = req.session.username
-  res.render('order-products',{user,products})
+  res.render('order-products',{user,products,categories})
 })
 
+router.get('/orders/cancel-order/:id',(req,res)=>{
+  userHelper.cancelOrder(req.params.id).then((response)=>{
+    res.redirect('/orders')
+  })
+})
 module.exports = router;

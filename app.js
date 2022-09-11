@@ -9,6 +9,8 @@ var fileUpload = require('express-fileupload')
 var db = require('./config/connection')
 var session = require('express-session')
 
+var method = hbs.create({});
+
 db.connect((err)=>{
   if(err) console.log("Connection Error");
   else console.log("Connection Is Successfull");
@@ -29,6 +31,14 @@ app.engine('hbs', hbs.engine({
   layoutsDir: __dirname + '/views/layout/',
   partialsDir: __dirname + '/views/partials'
 }))
+
+method.handlebars.registerHelper('unlessEquals', function(arg1, arg2, options) {
+  return (arg1 != arg2) ? options.fn(this) : options.inverse(this);
+});
+
+method.handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+  return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+});
 
 app.use(logger('dev'));
 app.use(express.json());

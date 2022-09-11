@@ -185,8 +185,15 @@ router.get('/categories/delete-category/:id', (req, res) => {
 
 ///////////////////////////////////////////Orders///////////////////////////////////////////
 
-router.get('/orders',(req,res)=>{
-  let products = userHelper.getAllOrders()
+router.get('/orders',async (req,res)=>{
+  let orders = await adminHelper.getAllTheOrders()
+  res.render('admin-orders',{admin:true,orders})
+})
+
+router.post('/orders/change-order-status',(req,res)=>{
+  adminHelper.changeOrderStatus(req.body).then((response)=>{
+    res.json(response) 
+  })
 })
 
 
