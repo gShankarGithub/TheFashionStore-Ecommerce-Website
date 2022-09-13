@@ -8,27 +8,28 @@ var userHelper = require('../helpers/user-helpers')
 
 router.get('/login', (req, res) => {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
-  if (req.session.admin == true){
+  if (req.session.admin == true) {
     res.redirect('/admin')
-  }else {
+  } else {
     var loginErr = req.session.adminLoginErr
-    res.render('admin-login', { adminLogin: true ,loginErr})
+    res.render('admin-login', { adminLogin: true, loginErr })
+    req.session.adminloginErr = false
   }
-  
+
 })
 
-router.post('/login',(req,res)=>{
-  userHelper.doLogin(req.body).then((response)=>{
+router.post('/login', (req, res) => {
+  userHelper.doLogin(req.body).then((response) => {
     if (response.adminStatus) {
       req.session.adminname = response.user
       req.session.admin = true
       res.redirect('/admin')
-    }else {
+    } else {
       req.session.adminLoginErr = "Invalid Username And Password"
       res.redirect('/admin/login')
     }
   })
-  
+
 })
 
 
@@ -96,7 +97,7 @@ router.post('/add-product', (req, res) => {
       adminHelper.addProduct(req.body, (id) => {
         let image = req.files.pImage
 
-        
+
         image?.mv('./public/product-images/' + id + '.jpg', (err, done) => {
           if (!err) {
             res.redirect("/admin/products")
@@ -104,7 +105,7 @@ router.post('/add-product', (req, res) => {
             console.log(err);
           }
         })
-        
+
       })
     } else {
       res.redirect('/admin/login')
@@ -152,7 +153,7 @@ router.post('/categories/addcategory', (req, res) => {
   if (req.session.admin == true) {
     adminHelper.addCategory(req.body, (id) => {
       let image = req.files.cImage
-      image.mv('./public/category-images/' + id + '.jpg', (err, done) => {
+      image?.mv('./public/category-images/' + id + '.jpg', (err, done) => {
         if (!err) {
           res.redirect("/admin/categories")
         } else {
@@ -185,14 +186,14 @@ router.get('/categories/delete-category/:id', (req, res) => {
 
 ///////////////////////////////////////////Orders///////////////////////////////////////////
 
-router.get('/orders',async (req,res)=>{
+router.get('/orders', async (req, res) => {
   let orders = await adminHelper.getAllTheOrders()
-  res.render('admin-orders',{admin:true,orders})
+  res.render('admin-orders', { admin: true, orders })
 })
 
-router.post('/orders/change-order-status',(req,res)=>{
-  adminHelper.changeOrderStatus(req.body).then((response)=>{
-    res.json(response) 
+router.post('/orders/change-order-status', (req, res) => {
+  adminHelper.changeOrderStatus(req.body).then((response) => {
+    res.json(response)
   })
 })
 

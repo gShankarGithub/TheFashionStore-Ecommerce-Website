@@ -79,36 +79,19 @@
   </div>
 </section>
 
-<script>
-  jQuery('#form').validate({
+<script> jQuery('#form').validate({
     rules: {
-      name: {
-        required: true,
-        noSpace: true,
-        minlength: 5,
-      },
-      email: {
-        required: true,
-        email: true,
-        noSpace: true,
-      },
-      password: {
-        required: true,
-        minlength: 5,
-        noSpace: true,
-      },
-      number: {
-        required: true,
-        minlength: 7,
-        noSpace: true,
-      }
-    },
-    messages: {
-      name: "Please enter your name"
-
-    },
-    submitHandler: function (form) {
-      $form.submit();
+      name: 'required',
+      email: 'required',
+      number: 'required',
+      password: 'required',
+    }, messages: {
+      name: 'Please enter valid name',
+      description: 'Please Enter Your description',
+      price: 'Please Enter price',
+      category: 'Please Enter valid category',
+    }, submitHandler: function (form) {
+      form.submit();
     }
   })
 </script>

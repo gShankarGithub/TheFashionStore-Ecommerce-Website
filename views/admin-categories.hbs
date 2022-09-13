@@ -1,3 +1,15 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script src="js/signup-form.js"></script>
+
+<style>
+    #wrap-jquery-error {
+        display: flex;
+        flex-direction: column;
+
+    }
+</style>
+
 <section>
     <div class="container">
         <div class="row">
@@ -9,14 +21,15 @@
             </div>
             <div class="collapse  mb-1" id="collapseExample">
                 <div class="card card-body border border-2">
-                    <form action="/admin/categories/addcategory" method="post" class="form-inline " enctype="multipart/form-data">
-                        <div class="form-group mb-2">
+                    <form action="/admin/categories/addcategory" method="post" class="form-inline "
+                        enctype="multipart/form-data" id="form">
+                        <div class="form-group mb-2" id="wrap-jquery-error">
                             <input type="text" class="form-control" name="categoryName" placeholder="Category Name">
                         </div>
-                        <div class="form-group mx-sm-3 mb-2">
+                        <div class="form-group mx-sm-3 mb-2" id="wrap-jquery-error">
                             <input type="text" class="form-control" name="description" placeholder="Description">
                         </div>
-                        <div class="form-group mx-sm-3 mb-2">
+                        <div class="form-group mx-sm-3 mb-2" id="wrap-jquery-error">
                             <input type="file" class="form-control" name="cImage">
                         </div>
                         <button type="submit" class="btn btn-primary mb-2">Submit</button>
@@ -75,4 +88,20 @@
             }
         });
     });
+</script>
+
+<script>
+    jQuery('#form').validate({
+        rules: {
+            categoryName: 'required',
+            description: 'required',
+            cImage: 'required',
+        }, messages: {
+            pName: 'Please Enter Valid Name',
+            description: 'Please Enter Description',
+            cImage: 'Please Enter Image',
+        }, submitHandler: function (form) {
+            form.submit();
+        }
+    })
 </script>

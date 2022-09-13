@@ -1,3 +1,7 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script src="js/signup-form.js"></script>
+
 <section class="vh-100 bg-image"
   style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
   <div class="mask d-flex align-items-center h-100 gradient-custom-3">
@@ -8,7 +12,7 @@
             <div class="card-body p-5">
               <h2 class="text-uppercase text-center mb-5">Add Product</h2>
 
-              <form action="/admin/add-product" method="POST" class="pt-3" enctype="multipart/form-data">
+              <form action="/admin/add-product" method="POST" class="pt-3" enctype="multipart/form-data " id="form">
                 <div class="form-group">
                   <input type="text" name="pName" class="form-control mb-4" placeholder="Product Name">
                 </div>
@@ -39,3 +43,21 @@
     </div>
   </div>
 </section>
+
+<script>
+  jQuery('#form').validate({
+    rules: {
+      pName: 'required',
+      price: 'required',
+      description: 'required',
+      pImage: 'required',
+    }, messages: {
+      pName: 'Please Enter Valid Name',
+      price: 'Please Enter Your Price',
+      description: 'Please Enter Description',
+      pImage: 'Please Enter Image',
+    }, submitHandler: function (form) {
+      form.submit();
+    }
+  })
+</script>
