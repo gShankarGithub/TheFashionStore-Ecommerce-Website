@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var userHelper = require('../helpers/user-helpers')
-var adminHelper = require('../helpers/admin-helpers')
+var adminHelper = require('../helpers/admin-helpers');
+const userHelpers = require('../helpers/user-helpers');
 
 
 const serviceSID = "VA464df13e96e261c09240e9e5d16bc514"
@@ -221,8 +222,26 @@ router.post('/place-order',async(req,res)=>{
 
   }
   totalPrice = await userHelper.getTotalAmount(req.body.userId)
-  userHelper.placeOrder(req.body,products,totalPrice).then((response)=>{
-    res.json({status:true})
+  userHelper.placeOrder(req.body,products,totalPrice).then((orderId)=>{
+    if(req.body['payment-method']==='COD'){
+      res.json({codSuccess:true})
+    }else{
+      userHelper.generateRazorpay(orderId,totalPrice).then((response)=>{
+        res.json(response)
+      })
+    }
+    
+  })
+})
+
+router.post('/verify-payment',(req,res)=>{
+  console.log(req.body);
+  userHelpers.verifyPayment(req.body).then(()=>{
+    userHelper.changePaymentStatus(req.body['order[receipt]']).then(()=>{
+      res.json({status:true})
+    })
+  }).catch((err)=>{
+    res.json({status:false})
   })
 })
 

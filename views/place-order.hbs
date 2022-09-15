@@ -1,3 +1,4 @@
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
     @media (min-width: 1025px) {
         .h-custom {
@@ -54,15 +55,18 @@
                                         <form id="checkout-form" action="/complete" method="post">
                                             <div class="mb-3">
                                                 <label for="exampleInputAddress" class="form-label">Address</label>
-                                                <input type="text" class="form-control" id="exampleInputAddress" name="address">
+                                                <input type="text" class="form-control" id="exampleInputAddress"
+                                                    name="address">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="exampleInputPincode" class="form-label">Pincode</label>
-                                                <input type="text" class="form-control" id="exampleInputPincode" name="pincode">
+                                                <input type="text" class="form-control" id="exampleInputPincode"
+                                                    name="pincode">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="exampleInputMobile" class="form-label">Mobile</label>
-                                                <input type="text" class="form-control" id="exampleInputMobile" name="mobile">
+                                                <input type="text" class="form-control" id="exampleInputMobile"
+                                                    name="mobile">
                                             </div>
                                             <input type="text" name="userId" id="" value="{{user._id}}" hidden>
                                     </div>
@@ -79,8 +83,8 @@
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="payment-method" value="ONLINE"
-                                            id="flexRadioDefault2" checked>
+                                        <input class="form-check-input" type="radio" name="payment-method"
+                                            value="ONLINE" id="flexRadioDefault2" checked>
                                         <label class="form-check-label" for="flexRadioDefault2">
                                             Card Payment
                                         </label>
@@ -106,17 +110,65 @@
 </section>
 
 <script>
-    $("#checkout-form").submit((e)=>{
+    $("#checkout-form").submit((e) => {
         e.preventDefault()
         $.ajax({
-            url:'/place-order',
-            method:'post',
-            data:$('#checkout-form').serialize(),
-            success:(response)=>{
-                if(response.status){
-                    location.href='/place-order/order-success'
+            url: '/place-order',
+            method: 'post',
+            data: $('#checkout-form').serialize(),
+            success: (response) => {
+                if (response.codSuccess) {
+                    location.href = '/place-order/order-success'
+                } else {
+                    razorpayPayment(response)
                 }
             }
         })
     })
+
+    function razorpayPayment(order) {
+        var options = {
+            "key": "rzp_test_gnHOww8ibn0dvS", // Enter the Key ID generated from the Dashboard
+            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "The Fashion Store",
+            "description": "Test Transaction",
+            "image": "https://example.com/your_logo",
+            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (response) {
+                verifyPayment(response , order)
+            },
+            "prefill": {
+                "name": "Gaurav Kumar",
+                "email": "gaurav.kumar@example.com",
+                "contact": "9999999999"
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    }
+    function verifyPayment(payment, order) {
+        $.ajax({
+            url: '/verify-payment',
+            data: {
+                payment,
+                order
+            },
+            method: 'post',
+            success:(response)=>{
+                if(response.status){
+                    location.href = '/place-order/order-success'
+                }else{
+                    alert("Payment Failed")
+                }
+            }
+        })
+    }
+
 </script>
