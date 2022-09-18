@@ -33,10 +33,23 @@ router.post('/login', (req, res) => {
 })
 
 
-router.get('/', function (req, res, next) {
+router.get('/',async (req, res, next)=> {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
   if (req.session.admin == true) {
-    res.render('admin', { admin: true })
+    let usersCount = await adminHelper.getUsersCount()
+    let ordersCount = await adminHelper.getOrdersCount()
+    let productsCount = await adminHelper.getProductsCount()
+    let total = await adminHelper.getTotalAmountOrders()
+    let weeks = await adminHelper.getWeeks()
+    let months = await adminHelper.getMonths()
+    console.log(months);
+    let yAxis = []
+    let xAxis = []
+    for (val of weeks){
+      yAxis.push(val.count)
+      xAxis.push(val._id)
+    }
+    res.render('admin', { admin: true ,usersCount,ordersCount,productsCount,total,yAxis,xAxis})
   } else {
     res.redirect('/admin/login')
   }

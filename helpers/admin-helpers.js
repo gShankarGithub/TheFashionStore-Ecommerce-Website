@@ -110,6 +110,115 @@ module.exports = {
                 resolve(response)
             })
         })
+    },
+
+    getUsersCount: () => {
+        return new Promise(async (resolve, reject) => {
+            let usersCount = await db.get().collection(collection.USER_COLLECTION).count()
+            resolve(usersCount)
+        })
+    },
+
+    getProductsCount: () => {
+        return new Promise(async (resolve, reject) => {
+            let productsCount = await db.get().collection(collection.PRODUCT_COLLECTION).count()
+            resolve(productsCount)
+        })
+    },
+
+    getOrdersCount: () => {
+        return new Promise(async (resolve, reject) => {
+            let ordersCount = await db.get().collection(collection.ORDER_COLLECTION).find({ status: { $ne: "cancelled" } }).count()
+            resolve(ordersCount)
+        })
+    },
+
+    getTotalAmountOrders: () => {
+        return new Promise(async (resolve, reject) => {
+            let total = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { status: 'delivered' }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        total: '$totalAmount'
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$total' }
+                    }
+                }
+            ]).toArray()
+            resolve(total[0].total)
+        })
+    },
+    getWeeks: () => {
+        return new Promise(async (resolve, reject) => {
+            let weeks = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        date: {
+                            $gte: new Date(new Date() - 7 * 7 * 60 * 60 * 24 * 1000)
+                        },
+                    }
+                },
+                {
+                    $project: {
+                        date: '$date',
+                        week: { $week: "$date" },
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$week",
+                        count: { $sum: 1 },
+                    }
+                },
+                {
+                    $sort: {
+                        _id: 1
+                    }
+                },
+
+            ]).toArray()
+            resolve(weeks)
+        })
+    },
+
+    getMonths: () => {
+        return new Promise(async (resolve, reject) => {
+            let weeks = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: {
+                        date: {
+                            $gte: new Date(new Date().getMonth()-10)
+                        },
+                    }
+                },
+                {
+                    $project: {
+                        date: '$date',
+                        month: { $month: "$date" },
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$month",
+                        count: { $sum: 1 },
+                    }
+                },
+                {
+                    $sort: {
+                        _id: 1
+                    }
+                },
+
+            ]).toArray()
+            resolve(weeks)
+        })
     }
 
 }

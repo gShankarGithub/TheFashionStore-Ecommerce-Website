@@ -12,31 +12,7 @@
 
 <section>
     <div class="container">
-        <div class="row">
-            <div class="container d-flex justify-content-end mt-2 mb-1">
-                <a class="btn btn-success" data-toggle="collapse" href="#collapseExample" role="button"
-                    aria-expanded="false" aria-controls="collapseExample">
-                    Add Category
-                </a>
-            </div>
-            <div class="collapse  mb-1" id="collapseExample">
-                <div class="card card-body border border-2">
-                    <form action="/admin/categories/addcategory" method="post" class="form-inline "
-                        enctype="multipart/form-data" id="form">
-                        <div class="form-group mb-2" id="wrap-jquery-error">
-                            <input type="text" class="form-control" name="categoryName" placeholder="Category Name">
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2" id="wrap-jquery-error">
-                            <input type="text" class="form-control" name="description" placeholder="Description">
-                        </div>
-                        <div class="form-group mx-sm-3 mb-2" id="wrap-jquery-error">
-                            <input type="file" class="form-control" name="cImage">
-                        </div>
-                        <button type="submit" class="btn btn-primary mb-2">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+        
         <div class="row">
             <table id="example" class="table table-striped nowrap" style="width:100%">
                 <thead>

@@ -122,6 +122,14 @@ router.post('/signup', (req, res) => {
   })
 })
 
+//////////////////////////Profile Management/////////////////////////////////////////////////////
+
+router.get('/profile', async (req, res) => {
+  let categories = await adminHelper.getAllCategory()
+  let user = req.session.username
+  res.render('profile', { user, categories })
+})
+
 ///////////////////////Shop, ProductList & Product Details///////////////////////////////////////
 
 
@@ -168,107 +176,128 @@ router.get('/category/:categoryName', async (req, res) => {
 
 router.get('/add-to-cart/:id', verifyLogin, (req, res) => {
   userHelper.addToCart(req.params.id, req.session.username._id).then(() => {
-    res.json({status:true})
+    res.json({ status: true })
   })
 })
 
-router.get('/cart', verifyLogin,async (req, res) => {
+router.get('/cart', verifyLogin, async (req, res) => {
   let user = req.session.username
   let categories = await adminHelper.getAllCategory()
   let total = 0
   let products = await userHelper.getCartProducts(req.session.username._id)
-  if(products.length>0){
-    total  = await userHelper.getTotalAmount(req.session.username._id)
-    res.render('cart', { products, user ,total,categories})
-  }else{
-    res.render('empty-cart',{user,categories})
+  if (products.length > 0) {
+    total = await userHelper.getTotalAmount(req.session.username._id)
+    res.render('cart', { products, user, total, categories })
+  } else {
+    res.render('empty-cart', { user, categories })
   }
-  
+
 })
 
-router.post('/change-product-quantity',(req,res,next)=>{
-  userHelper.changeProductQuantity(req.body).then(async(response)=>{
-    if(response.status){
-      let total  = await userHelper.getTotalAmount(req.body.user)
+router.post('/change-product-quantity', (req, res, next) => {
+  userHelper.changeProductQuantity(req.body).then(async (response) => {
+    if (response.status) {
+      let total = await userHelper.getTotalAmount(req.body.user)
       response.total = total
     }
     res.json(response)
   })
 })
 
-router.post('/remove-cart-item',(req,res)=>{
-  userHelper.removeCartItem(req.body).then((response)=>{
+router.post('/remove-cart-item', (req, res) => {
+  userHelper.removeCartItem(req.body).then((response) => {
     res.json(response)
   })
 })
 
-router.get('/place-order',verifyLogin,async (req,res)=>{
+router.post('/addAddress', async (req, res) => {
+  console.log(req.body);
+  await userHelper.addAddress(req.body)
+  res.redirect('/place-order')
+})
+
+router.get('/place-order', verifyLogin, async (req, res) => {
   let products = await userHelper.getCartProducts(req.session.username._id)
   let categories = await adminHelper.getAllCategory()
-  let total =0
-  if(products.length>0){
-    total  = await userHelper.getTotalAmount(req.session.username._id)
+  let address = await userHelper.getAddress(req.session.username._id)
+  let total = 0
+  if (products.length > 0) {
+    total = await userHelper.getTotalAmount(req.session.username._id)
     let user = req.session.username
-    res.render('place-order',{user,total,categories})
-  }else {
+    res.render('place-order', { user, total, categories, address })
+  } else {
     res.redirect('/cart')
   }
 })
 
-router.post('/place-order',async(req,res)=>{
+router.post('/place-order', async (req, res) => {
+
   let products = await userHelper.getCartProductList(req.body.userId)
   let totalPrice = 0
-  if(products.length>0){
+  if (products.length > 0) {
+    totalPrice = await userHelper.getTotalAmount(req.body.userId)
+    userHelper.placeOrder(req.body, products, totalPrice).then((orderId) => {
+      if (req.body['payment-method'] === 'COD') {
+        res.json({ codSuccess: true })
+      } else {
+        userHelper.generateRazorpay(orderId, totalPrice).then((response) => {
+          res.json(response)
+        })
+      }
 
-  }
-  totalPrice = await userHelper.getTotalAmount(req.body.userId)
-  userHelper.placeOrder(req.body,products,totalPrice).then((orderId)=>{
-    if(req.body['payment-method']==='COD'){
-      res.json({codSuccess:true})
-    }else{
-      userHelper.generateRazorpay(orderId,totalPrice).then((response)=>{
-        res.json(response)
-      })
-    }
-    
-  })
-})
-
-router.post('/verify-payment',(req,res)=>{
-  console.log(req.body);
-  userHelpers.verifyPayment(req.body).then(()=>{
-    userHelper.changePaymentStatus(req.body['order[receipt]']).then(()=>{
-      res.json({status:true})
     })
-  }).catch((err)=>{
-    res.json({status:false})
+  }
+
+})
+
+router.post('/verify-payment', (req, res) => {
+  let user = req.session.username
+  userHelpers.verifyPayment(req.body).then(() => {
+    userHelper.changePaymentStatus(req.body['order[receipt]'],user._id).then(() => {
+      res.json({ status: true })
+    })
+  }).catch((err) => {
+    res.json({ status: false })
   })
 })
 
-router.get('/place-order/order-success',verifyLogin,async(req,res)=>{
+router.get('/place-order/order-success', verifyLogin, async (req, res) => {
   let user = req.session.username
   let categories = await adminHelper.getAllCategory()
-  res.render('order-success',{user,categories})
+  res.render('order-success', { user, categories })
 })
 
-router.get('/orders',verifyLogin, async(req,res)=>{
+///////////////////////////////////////ORDERS////////////////////////////////////////
+
+router.get('/orders', verifyLogin, async (req, res) => {
   let user = req.session.username
   let categories = await adminHelper.getAllCategory()
   let userId = req.session.username._id
   let orders = await userHelper.getAllOrders(userId)
-  res.render('order-list',{orders,user,categories})
+  for (val of orders){
+    val.date = new Date (val.date).toLocaleDateString()
+  }
+  let count = Object.keys(orders).length
+  if (count) {
+    res.render('order-list', { orders, user, categories })
+  } else {
+    res.render('zero-orders', { user, categories })
+  }
+
+
+
 })
 
-router.get('/orders/products/:id',verifyLogin,async(req,res)=>{
+router.get('/orders/products/:id', verifyLogin, async (req, res) => {
   let orderId = req.params.id
   let categories = await adminHelper.getAllCategory()
   let products = await userHelper.getAllProductsOfOrder(orderId)
   let user = req.session.username
-  res.render('order-products',{user,products,categories})
+  res.render('order-products', { user, products, categories })
 })
 
-router.get('/orders/cancel-order/:id',(req,res)=>{
-  userHelper.cancelOrder(req.params.id).then((response)=>{
+router.get('/orders/cancel-order/:id', (req, res) => {
+  userHelper.cancelOrder(req.params.id).then((response) => {
     res.redirect('/orders')
   })
 })

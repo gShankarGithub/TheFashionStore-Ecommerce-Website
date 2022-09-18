@@ -6,6 +6,7 @@ const { ObjectId } = require('mongodb')
 const { response } = require('express')
 var objectId = require('mongodb').ObjectId
 const Razorpay = require('razorpay')
+const { ADDRESS_COLLECTION } = require('../config/collections')
 var instance = new Razorpay({
     key_id: 'rzp_test_gnHOww8ibn0dvS',
     key_secret: 'v9cct7Myvlmasmm6W3xDryn1',
@@ -78,6 +79,25 @@ module.exports = {
             resolve(categoryProduct)
         })
     },
+    //////////////////////////////////////Address///////////////////////////////////////
+
+    addAddress: (details)=>{
+        return new Promise((resolve,reject)=>{
+            details.userId = objectId(details.userId)
+            db.get().collection(collection.ADDRESS_COLLECTION).insertOne(details).then((response) => {
+                resolve()
+            })
+        })
+    },
+
+    getAddress:(userId)=>{
+        return new Promise(async (resolve,reject)=>{
+            let addresses = await db.get().collection(collection.ADDRESS_COLLECTION).find({userId:objectId(userId)}).toArray()
+            resolve(addresses)
+        })
+        
+    },
+
 
     /////////////////////////////////////Cart////////////////////////////////////////////    
 
@@ -243,23 +263,29 @@ module.exports = {
         })
     },
     placeOrder: (order, products, total) => {
-        return new Promise((resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
+            console.log(order);
             let status = order["payment-method"] === 'COD' ? 'placed' : 'pending'
+            let location = await db.get().collection(collection.ADDRESS_COLLECTION).findOne({ _id: objectId(order.addressId) })
+
             let orderObj = {
                 deliveryDetails: {
-                    mobile: order.mobile,
-                    address: order.address,
-                    pincode: order.pincode
+                    mobile: location.mobile,
+                    address: location.address,
+                    pincode: location.pincode
                 },
                 userId: objectId(order.userId),
                 paymentMethod: order["payment-method"],
                 products: products,
                 totalAmount: total,
                 status: status,
-                date: new Date().toLocaleDateString()
+                date: new Date()
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
-                db.get().collection(collection.CART_COLLECTION).remove({ user: objectId(order.userId) })
+                if(order["payment-method"]=='COD'){
+                    db.get().collection(collection.CART_COLLECTION).remove({ user: objectId(order.userId) })
+                }
+                
                 resolve(response.insertedId)
             })
         })
@@ -298,8 +324,9 @@ module.exports = {
             }
         })
     },
-    changePaymentStatus:(orderId)=>{
+    changePaymentStatus:(orderId,userId)=>{
         return new Promise((resolve,reject)=>{
+            db.get().collection(collection.CART_COLLECTION).remove({ user: objectId(userId) })
             db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:objectId(orderId)},
             {
                 $set:{
@@ -307,7 +334,6 @@ module.exports = {
                 }
             }
             ).then(()=>{
-                console.log('updateerr');
                 resolve()
             })
         })
@@ -316,7 +342,7 @@ module.exports = {
     ///////////////////////////////////////////////////Order/////////////////////////////////////////////////////
     getAllOrders: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let orders = await db.get().collection(collection.ORDER_COLLECTION).find({ userId: objectId(userId) }).toArray()
+            let orders = await db.get().collection(collection.ORDER_COLLECTION).find({ userId: objectId(userId) }).sort({date:-1}).toArray()
             resolve(orders)
         })
     },
