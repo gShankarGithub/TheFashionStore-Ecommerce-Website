@@ -1,94 +1,135 @@
-<style>
-    body {
-        background: #eee
-    }
+<section>
+    <section style="background-color: #eee;">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                                alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                            <h5 class="my-3">{{user.name}}</h5>
+                            <div class="d-flex justify-content-center mb-2">
+                                <a class="btn btn-primary" href="/orders">Orders</a>
+                                <a href="" class="btn btn-outline-primary ms-1" data-toggle="modal"
+                                    data-target="#modalRegisterForm">Edit Profile</a>
+                            </div>
+                            <div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog"
+                                aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header text-center">
+                                            <h4 class="modal-title w-100 font-weight-bold">Edit Profile</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form method="post" action="/profile/edit-user">
+                                            <div class="my-5">
+                                                <div class="d-flex">
+                                                    <div class="col-md-2">
+                                                        <label for="name">Name</label>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <input id="name" type="text" name="name"
+                                                            class=" w-200px form-control mb-4" placeholder="Name"
+                                                            value="{{user.name}}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div class="col-md-2">
+                                                        <label for="email">Email</label>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <input id="email" type="email" name="email"
+                                                            class="form-control mb-4" placeholder="Email"
+                                                            value="{{user.email}}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <div class="col-md-2">
+                                                        <label for="mobile">Mobile</label>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <input id="mobile" type="text" name="number"
+                                                            class="form-control mb-4" placeholder="Mobile"
+                                                            value="{{user.number}}" required>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div>
+                                                    {{!-- <input type="submit" value="Submit"> --}}
+                                                    <button type="submit" class="btn btn-success rounded-pill">Edit
+                                                        User</button>
+                                                </div>
 
-    .form-control:focus {
-        box-shadow: none;
-        border-color: #BA68C8
-    }
 
-    .profile-button {
-        background: rgb(99, 39, 120);
-        box-shadow: none;
-        border: none
-    }
+                                            </div>
 
-    .profile-button:hover {
-        background: #682773
-    }
-
-    .profile-button:focus {
-        background: #682773;
-        box-shadow: none
-    }
-
-    .profile-button:active {
-        background: #682773;
-        box-shadow: none
-    }
-
-    .back:hover {
-        color: #682773;
-        cursor: pointer
-    }
-
-    .labels {
-        font-size: 11px
-    }
-
-    .add-experience:hover {
-        background: #BA68C8;
-        color: #fff;
-        cursor: pointer;
-        border: solid 1px #BA68C8
-    }
-</style>
-<div class="container rounded bg-white mt-5 mb-5">
-    <div class="row">
-        <div class="col-md-3 border-right">
-            {{!-- <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img
-                    class="rounded-circle mt-5" width="150px"
-                    src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"><span
-                    class="font-weight-bold">Edogaru</span><span class="text-black-50">edogaru@mail.com.my</span><span>
-                </span>
-            </div> --}}
-        </div>
-        <div class="col-md-5 border-right">
-            <div class="p-3 py-5">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="text-right">Profile Settings</h4>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="col-md-12"><label class="labels">Name</label><input type="text"
-                            class="form-control" placeholder="enter name" value="">
-                    </div>
-                    <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text"
-                            class="form-control" placeholder="enter phone number" value="">
-                    </div>
-                    <div class="col-md-12"><label class="labels">Address Line 1</label><input type="text"
-                            class="form-control" placeholder="enter address line 1" value="">
-                    </div>
-                    <div class="col-md-12"><label class="labels">Email ID</label><input type="text" class="form-control"
-                            placeholder="enter email id" value="">
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Full Name</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">{{user.name}}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Email</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">{{user.email}}</p>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Mobile</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0">{{user.number}}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0">Address</p>
+                                </div>
+                                {{#if userAddress}}
+                                <ul>
+                                    {{#each userAddress}}
+                                    <li class="ms-5">
+                                        <p class="text-muted mb-0">{{this.address}}, {{this.pincode}}</p>
+                                    </li>
+                                    {{/each}}
+                                </ul>
+                                {{else}}
+                                <p class="text-muted mb-0">No Saved Address</p>
+                                {{/if}}
+
+                            </div>
+
+
+                        </div>
                     </div>
                 </div>
-                <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="button">Save
-                        Profile</button></div>
+
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="p-3 py-5">
-                <div class="d-flex justify-content-between align-items-center experience"><span>Edit
-                        Experience</span><span class="border px-3 p-1 add-experience"><i
-                            class="fa fa-plus"></i>&nbsp;Experience</span></div><br>
-                <div class="col-md-12"><label class="labels">Experience in Designing</label><input type="text"
-                        class="form-control" placeholder="experience" value=""></div> <br>
-                <div class="col-md-12"><label class="labels">Additional Details</label><input type="text"
-                        class="form-control" placeholder="additional details" value=""></div>
-            </div>
         </div>
-    </div>
-</div>
-</div>
-</div>
+    </section>
+</section>

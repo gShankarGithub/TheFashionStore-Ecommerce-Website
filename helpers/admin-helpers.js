@@ -190,7 +190,7 @@ module.exports = {
 
     getMonths: () => {
         return new Promise(async (resolve, reject) => {
-            let weeks = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+            let month = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
                 {
                     $match: {
                         date: {
@@ -217,7 +217,7 @@ module.exports = {
                 },
 
             ]).toArray()
-            resolve(weeks)
+            resolve(month)
         })
     }
 

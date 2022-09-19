@@ -67,10 +67,17 @@ module.exports = {
                 resolve(response)
             }
             else {
-                console.log("successs");
                 resolve({ status: false })
             }
         })
+    },
+
+    getUserDetails: (userId)=>{
+        return new Promise(async (resolve,reject)=>{
+            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id:objectId(userId)})
+            resolve(user)
+        })
+
     },
 
     findProductCategory: (category) => {
@@ -79,10 +86,26 @@ module.exports = {
             resolve(categoryProduct)
         })
     },
+    //////////////////////////////////////////////////USER PROFILE/////////////////////////////////////////
+
+    updateUser: (userId, userDetails) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.USER_COLLECTION).updateOne({ _id: objectId(userId) }, {
+                $set: {
+                    name: userDetails.name,
+                    email: userDetails.email,
+                    number: userDetails.number
+                }
+            }).then((response) => {
+                resolve()
+            })
+        })
+    },
+
     //////////////////////////////////////Address///////////////////////////////////////
 
-    addAddress: (details)=>{
-        return new Promise((resolve,reject)=>{
+    addAddress: (details) => {
+        return new Promise((resolve, reject) => {
             details.userId = objectId(details.userId)
             db.get().collection(collection.ADDRESS_COLLECTION).insertOne(details).then((response) => {
                 resolve()
@@ -90,12 +113,12 @@ module.exports = {
         })
     },
 
-    getAddress:(userId)=>{
-        return new Promise(async (resolve,reject)=>{
-            let addresses = await db.get().collection(collection.ADDRESS_COLLECTION).find({userId:objectId(userId)}).toArray()
+    getAddress: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let addresses = await db.get().collection(collection.ADDRESS_COLLECTION).find({ userId: objectId(userId) }).toArray()
             resolve(addresses)
         })
-        
+
     },
 
 
@@ -263,7 +286,7 @@ module.exports = {
         })
     },
     placeOrder: (order, products, total) => {
-        return new Promise(async(resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             console.log(order);
             let status = order["payment-method"] === 'COD' ? 'placed' : 'pending'
             let location = await db.get().collection(collection.ADDRESS_COLLECTION).findOne({ _id: objectId(order.addressId) })
@@ -282,10 +305,10 @@ module.exports = {
                 date: new Date()
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
-                if(order["payment-method"]=='COD'){
+                if (order["payment-method"] == 'COD') {
                     db.get().collection(collection.CART_COLLECTION).remove({ user: objectId(order.userId) })
                 }
-                
+
                 resolve(response.insertedId)
             })
         })
@@ -296,44 +319,44 @@ module.exports = {
             let cart = await db.get().collection(collection.CART_COLLECTION).findOne({ user: objectId(userId) })
             resolve(cart.products)
         })
-    }, 
-    generateRazorpay: (orderId,total) => {
+    },
+    generateRazorpay: (orderId, total) => {
         return new Promise((resolve, reject) => {
             var options = {
                 amount: total,
                 currency: "INR",
-                receipt: ""+orderId
+                receipt: "" + orderId
             }
-            instance.orders.create(options, function(err, order){
-                console.log("New Order :",order);
+            instance.orders.create(options, function (err, order) {
+                console.log("New Order :", order);
                 resolve(order)
             })
 
         })
     },
-    verifyPayment:(details)=>{
-        return new Promise((resolve,reject)=>{
+    verifyPayment: (details) => {
+        return new Promise((resolve, reject) => {
             const crypto = require('crypto')
             let hmac = crypto.createHmac('sha256', 'v9cct7Myvlmasmm6W3xDryn1')
-            hmac.update(details['payment[razorpay_order_id]']+'|'+details['payment[razorpay_payment_id]'])
-            hmac=hmac.digest('hex')
-            if(hmac==details['payment[razorpay_signature]']){
+            hmac.update(details['payment[razorpay_order_id]'] + '|' + details['payment[razorpay_payment_id]'])
+            hmac = hmac.digest('hex')
+            if (hmac == details['payment[razorpay_signature]']) {
                 resolve()
-            }else{
+            } else {
                 reject()
             }
         })
     },
-    changePaymentStatus:(orderId,userId)=>{
-        return new Promise((resolve,reject)=>{
+    changePaymentStatus: (orderId, userId) => {
+        return new Promise((resolve, reject) => {
             db.get().collection(collection.CART_COLLECTION).remove({ user: objectId(userId) })
-            db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:objectId(orderId)},
-            {
-                $set:{
-                    status:'placed'
+            db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: objectId(orderId) },
+                {
+                    $set: {
+                        status: 'placed'
+                    }
                 }
-            }
-            ).then(()=>{
+            ).then(() => {
                 resolve()
             })
         })
@@ -342,7 +365,7 @@ module.exports = {
     ///////////////////////////////////////////////////Order/////////////////////////////////////////////////////
     getAllOrders: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let orders = await db.get().collection(collection.ORDER_COLLECTION).find({ userId: objectId(userId) }).sort({date:-1}).toArray()
+            let orders = await db.get().collection(collection.ORDER_COLLECTION).find({ userId: objectId(userId) }).sort({ date: -1 }).toArray()
             resolve(orders)
         })
     },

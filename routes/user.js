@@ -124,10 +124,24 @@ router.post('/signup', (req, res) => {
 
 //////////////////////////Profile Management/////////////////////////////////////////////////////
 
-router.get('/profile', async (req, res) => {
-  let categories = await adminHelper.getAllCategory()
+router.get('/profile', verifyLogin, async (req, res) => {
   let user = req.session.username
-  res.render('profile', { user, categories })
+  let categories = await adminHelper.getAllCategory()
+  let userAddress = await userHelper.getAddress(user._id)
+  res.render('profile', { user, categories, userAddress })
+})
+
+
+router.post('/profile/edit-user',(req, res) => {
+  let userDetails = req.body
+  let userId = req.session.username._id
+  userHelper.updateUser(userId, userDetails).then(async(response) => {
+    req.session.username = null
+    console.log(userId);
+    req.session.username = await userHelper.getUserDetails(userId)
+    res.redirect('/profile')
+  })
+
 })
 
 ///////////////////////Shop, ProductList & Product Details///////////////////////////////////////
@@ -253,7 +267,7 @@ router.post('/place-order', async (req, res) => {
 router.post('/verify-payment', (req, res) => {
   let user = req.session.username
   userHelpers.verifyPayment(req.body).then(() => {
-    userHelper.changePaymentStatus(req.body['order[receipt]'],user._id).then(() => {
+    userHelper.changePaymentStatus(req.body['order[receipt]'], user._id).then(() => {
       res.json({ status: true })
     })
   }).catch((err) => {
@@ -274,8 +288,8 @@ router.get('/orders', verifyLogin, async (req, res) => {
   let categories = await adminHelper.getAllCategory()
   let userId = req.session.username._id
   let orders = await userHelper.getAllOrders(userId)
-  for (val of orders){
-    val.date = new Date (val.date).toLocaleDateString()
+  for (val of orders) {
+    val.date = new Date(val.date).toLocaleDateString()
   }
   let count = Object.keys(orders).length
   if (count) {

@@ -1,3 +1,117 @@
-<h1>{{message}}</h1>
-<h2>{{error.status}}</h2>
-<pre>{{error.stack}}</pre>
+<style>
+    #top {
+        font-weight: bold;
+        margin-top: 20px;
+        margin-left: 30px;
+        font-size: 25px;
+        line-height: 25px;
+        letter-spacing: -0.08em;
+        color: #2b2a2a;
+    }
+
+    #main {
+        margin-top: 100px;
+        display: flex;
+        height: 50%;
+    }
+
+    #image {
+        text-align: center;
+        width: 45%;
+    }
+
+    .imgScareCrow {
+        width: 65%;
+        /* height: 100%; */
+    }
+
+    #text {
+        font-family: 'Space Mono', monospace;
+        width: 55%;
+    }
+
+    #headding {
+        width: 60%;
+        font-size: 25px;
+    }
+
+    #content {
+        width: 40%;
+        margin-top: 40px;
+        font-size: 20px;
+    }
+
+    .button404 {
+        margin-top: 70px;
+        background-color: black;
+        color: white;
+        width: 150px;
+        font-size: 10px;
+        letter-spacing: -0.035em;
+        line-height: 40px;
+    }
+
+    #footer {
+        margin-top: 115px;
+        text-align: center;
+    }
+
+    @media only screen and (max-width: 960px) {
+
+        #top {
+            margin-top: 15px;
+            margin-left: 25px;
+            font-size: 15px;
+        }
+
+        #main {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #image {
+            width: 100%;
+        }
+
+        #text {
+            width: 100%;
+            height: 50%;
+        }
+
+        #headding {
+            width: 100%;
+            font-size: 20px;
+        }
+
+        #content {
+            width: 80%;
+            font-size: 15px;
+        }
+
+        #footer {
+            margin-top: 100px;
+        }
+    }
+</style>
+
+<section>
+    <div id="top">
+        ERROR 404
+    </div>
+
+    <div id="main">
+        <div id="image">
+            <img class="imgScareCrow" src="/images/Scarecrow.png" />
+        </div>
+
+        <div id="text">
+            <div id="headding">
+                <h1>I have bad news for you</h1>
+            </div>
+            <div id="content">
+                The page you are looking for might be removed or is temporarily unavailable.
+            </div>
+            <button class="button404"><a href="/admin"></a> BACK TO HOMEPAGE </button>
+        </div>
+    </div>
+</section>

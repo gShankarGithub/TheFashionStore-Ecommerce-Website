@@ -32,10 +32,12 @@
                             <td class="text-center">{{this.paymentMethod}}</td>
                             <td class="text-center">{{this.status}}</td>
                             <td class="text-center">
-                                <a href="/orders/products/{{this._id}}" class="btn btn-success">All Products</a>
+                                <a href="/orders/products/{{this._id}}" class="btn btn-success" style="background-color: #00b74a;">All Products</a>
                                 <br><br>
                                 {{#unlessEquals this.status 'cancelled'}}
-                                <a href="/orders/cancel-order/{{this._id}}" class="btn btn-danger">Cancel Order</a>
+                                {{#unlessEquals this.status 'delivered'}}
+                                <a href="/orders/cancel-order/{{this._id}}" class="btn btn-danger" style="background-color: #f93154;">Cancel Order</a>
+                                {{/unlessEquals}}
                                 {{/unlessEquals}}
                             </td>
                         </tr>
