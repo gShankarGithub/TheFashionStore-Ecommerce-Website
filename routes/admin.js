@@ -42,22 +42,32 @@ router.get('/',async (req, res, next)=> {
     let total = await adminHelper.getTotalAmountOrders()
     let weeks = await adminHelper.getWeeks()
     let months = await adminHelper.getMonths()
-    console.log(months);
+    let years = await adminHelper.getYears()
+    console.log(years);
+    /////////WEEK/////////////
     let weekYAxis = []
     let weekXAxis = []
     for (val of weeks){
       weekYAxis.push(val.count)
       weekXAxis.push(val._id)
     }
+    ////////////Month//////////////
     let monthYAxis = []
     let monthXAxis = []
     for (val of months){
       monthYAxis.push(val.count)
       monthXAxis.push(val._id)
     }
-    console.log(monthXAxis);
-    console.log(monthYAxis);
-    res.render('admin', { admin: true ,usersCount,ordersCount,productsCount,total,weekYAxis,weekXAxis,monthXAxis,monthYAxis})
+    /////////YEAR/////////////
+    let yearYAxis = []
+    let yearXAxis = []
+    for (val of years){
+      yearYAxis.push(val.count)
+      yearXAxis.push(val._id)
+    }
+    console.log(yearXAxis);
+    console.log(yearYAxis);
+    res.render('admin', { admin: true ,usersCount,ordersCount,productsCount,total,weekYAxis,weekXAxis,monthXAxis,monthYAxis,yearXAxis,yearYAxis})
   } else {
     res.redirect('/admin/login')
   }
