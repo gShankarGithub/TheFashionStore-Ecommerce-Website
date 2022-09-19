@@ -102,6 +102,14 @@ module.exports = {
         })
     },
 
+    deleteAddress: (addressId)=>{
+        return new Promise(async (resolve,reject)=>{
+            await db.get().collection(collection.ADDRESS_COLLECTION).remove({ _id: objectId(addressId) }).then(()=>{
+                resolve()
+            })
+        })
+    },
+
     //////////////////////////////////////Address///////////////////////////////////////
 
     addAddress: (details) => {

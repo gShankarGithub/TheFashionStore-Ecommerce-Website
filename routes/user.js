@@ -132,16 +132,27 @@ router.get('/profile', verifyLogin, async (req, res) => {
 })
 
 
-router.post('/profile/edit-user',(req, res) => {
+router.post('/profile/edit-user', (req, res) => {
   let userDetails = req.body
   let userId = req.session.username._id
-  userHelper.updateUser(userId, userDetails).then(async(response) => {
+  userHelper.updateUser(userId, userDetails).then(async (response) => {
     req.session.username = null
     console.log(userId);
     req.session.username = await userHelper.getUserDetails(userId)
     res.redirect('/profile')
   })
+})
 
+router.post('/addAddressProfile', async (req, res) => {
+  console.log(req.body);
+  await userHelper.addAddress(req.body)
+  res.redirect('/profile')
+})
+
+router.get('/deleteAddress/:id',(req,res)=>{
+  userHelper.deleteAddress(req.params.id).then(()=>{
+    res.redirect('/profile')
+  })
 })
 
 ///////////////////////Shop, ProductList & Product Details///////////////////////////////////////
@@ -184,6 +195,7 @@ router.get('/category/:categoryName', async (req, res) => {
     res.render('categories', { product, category, categories, user, cartCount })
   })
 })
+
 
 
 /////////////////////////////////////////Cart////////////////////////////////////////////////////////////

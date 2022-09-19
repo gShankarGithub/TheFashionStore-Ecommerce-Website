@@ -1,3 +1,8 @@
+<style>
+    textarea {
+        resize: none;
+    }
+</style>
 <section>
     <section style="background-color: #eee;">
         <div class="container py-5">
@@ -9,11 +14,15 @@
                                 alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
                             <h5 class="my-3">{{user.name}}</h5>
                             <div class="d-flex justify-content-center mb-2">
-                                <a class="btn btn-primary" href="/orders">Orders</a>
                                 <a href="" class="btn btn-outline-primary ms-1" data-toggle="modal"
-                                    data-target="#modalRegisterForm">Edit Profile</a>
+                                    data-target="#modalAddAddressForm">Add Address</a>
+                                <a href="" class="btn btn-outline-primary ms-1" data-toggle="modal"
+                                    data-target="#modalEditUserForm">Edit Profile</a>
                             </div>
-                            <div class="modal fade" id="modalRegisterForm" tabindex="-1" role="dialog"
+                            <div class="text-center">
+                                <a class="btn btn-primary" href="/orders">Orders</a>
+                            </div>
+                            <div class="modal fade" id="modalEditUserForm" tabindex="-1" role="dialog"
                                 aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -57,20 +66,58 @@
                                                 </div>
                                                 <hr>
                                                 <div>
-                                                    {{!-- <input type="submit" value="Submit"> --}}
                                                     <button type="submit" class="btn btn-success rounded-pill">Edit
                                                         User</button>
                                                 </div>
-
-
                                             </div>
-
                                         </form>
                                     </div>
                                 </div>
                             </div>
-                            <div class="text-center">
+                            {{!-- ADD ADDRESS --}}
+                            <div class="modal fade" id="modalAddAddressForm" tabindex="-1" role="dialog"
+                                aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header text-center">
+                                            <h4 class="modal-title w-100 font-weight-bold">Add Address</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form action="/addAddressProfile" method="post">
+                                            <div class="mt-2">
+                                                <div class="mx-3 mb-3">
+                                                    <label for="exampleInputAddress"
+                                                        class="form-label float-left">Address</label>
+                                                    <textarea required class="form-control" name="address"
+                                                        id="exampleInputAddress" cols="30" rows="5"></textarea>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="mx-3 mb-3">
+                                                    <label for="exampleInputPincode"
+                                                        class="form-label float-left">Pincode</label>
+                                                    <input type="text" class="form-control" id="exampleInputPincode"
+                                                        name="pincode">
+                                                </div>
+                                                <div class="mx-3 mb-3">
+                                                    <label for="exampleInputMobile"
+                                                        class="form-label float-left">Mobile</label>
+                                                    <input type="text" class="form-control" id="exampleInputMobile"
+                                                        name="mobile">
+                                                </div>
+                                                <input type="text" name="userId" id="" value="{{user._id}}" hidden>
+                                                <div class="mb-3 text-center">
+                                                    <button type="submit" class="btn btn-primary">Add
+                                                        Address</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
+                            {{!-- ADD ADDRESS END --}}
                         </div>
                     </div>
                 </div>
@@ -95,7 +142,6 @@
                                 </div>
                             </div>
                             <hr>
-
                             <div class="row">
                                 <div class="col-sm-3">
                                     <p class="mb-0">Mobile</p>
@@ -112,22 +158,24 @@
                                 {{#if userAddress}}
                                 <ul>
                                     {{#each userAddress}}
-                                    <li class="ms-5">
-                                        <p class="text-muted mb-0">{{this.address}}, {{this.pincode}}</p>
-                                    </li>
+                                    <div class="d-flex justify-content-between">
+                                        <li class="ms-5">
+                                            <p class="text-muted mb-0 w-75">{{this.address}}, {{this.pincode}}</p>
+                                        </li>
+                                        <a href="/deleteAddress/{{this._id}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+
+
+                                    </div>
+
                                     {{/each}}
                                 </ul>
                                 {{else}}
                                 <p class="text-muted mb-0">No Saved Address</p>
                                 {{/if}}
-
                             </div>
-
-
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         </div>
