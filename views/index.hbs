@@ -4,12 +4,11 @@
       <div class="carousel-item active" data-mdb-interval="2000">
         <img src="/images/Untitled.jpg" class="d-block w-100" alt="Wild Landscape" />
       </div>
+      {{#each banner}}
       <div class="carousel-item" data-mdb-interval="2000">
-        <img src="/images/6717350_824.jpg" class="d-block w-100" alt="Camera" />
+        <img src="/banner-images/{{this._id}}.jpg" class="d-block w-100" alt="Camera" />
       </div>
-      <div class="carousel-item" data-mdb-interval="2000">
-        <img src="/images/161.jpg" class="d-block w-100" alt="Exotic Fruits" />
-      </div>
+      {{/each}}
     </div>
     <button class="carousel-control-prev" data-mdb-target="#carouselExampleInterval" type="button"
       data-mdb-slide="prev">
@@ -30,38 +29,14 @@
   </div>
   <div class="container">
     <div class="row row-cols-1 row-cols-md-5">
+      {{!-- Begin --}}
+      {{#each categories}}
       <div class="col mb-4">
         <div class="card h-100">
           <!--Card image-->
           <div class="view overlay">
-            <img class="card-img-top" src="/images/452.jpg" alt="Card image cap">
-            <a href="#!">
-              <div class="mask rgba-white-slight"></div>
-            </a>
-          </div>
-
-          <!--Card content-->
-          <div class="card-body text-center">
-
-            <!--Title-->
-            <h5 class="card-title">Tops</h5>
-            <!--Text-->
-            {{!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-              card's content.</p>
-            <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-            <button type="button" class="btn btn-light-blue btn-md">Read more</button> --}}
-
-          </div>
-
-        </div>
-        <!-- Card -->
-      </div>
-      <div class="col mb-4">
-        <div class="card h-100">
-          <!--Card image-->
-          <div class="view overlay">
-            <img class="card-img-top" src="/images/jeans-wooden-background.jpg" alt="Card image cap">
-            <a href="#!">
+            <img class="card-img-top" src="/category-images/{{this._id}}.jpg" alt="Card image cap">
+            <a href="/category/{{this.categoryName}}">
               <div class="mask rgba-white-slight"></div>
             </a>
           </div>
@@ -70,34 +45,7 @@
           <div class="card-body">
 
             <!--Title-->
-            <h5 class="card-title text-center">Bottoms</h5>
-            <!--Text-->
-            {{!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-              card's content. Some quick example text to build on the card title and make up the bulk of the
-              card's content.</p>
-            <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-            <button type="button" class="btn btn-light-blue btn-md">Read more</button> --}}
-
-          </div>
-
-        </div>
-        <!-- Card -->
-      </div>
-      <div class="col mb-4">
-        <div class="card h-100">
-          <!--Card image-->
-          <div class="view overlay">
-            <img class="card-img-top" src="/images/shoe.jpg" alt="Card image cap">
-            <a href="#!">
-              <div class="mask rgba-white-slight"></div>
-            </a>
-          </div>
-
-          <!--Card content-->
-          <div class="card-body">
-
-            <!--Title-->
-            <h5 class="card-title text-center">Footwear</h5>
+            <h5 class="card-title text-center">{{this.categoryName}}</h5>
             <!--Text-->
             {{!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
               card's content.</p>
@@ -109,58 +57,7 @@
         </div>
         <!-- Card -->
       </div>
-      <div class="col mb-4">
-        <div class="card h-100">
-          <!--Card image-->
-          <div class="view overlay">
-            <img class="card-img-top" src="/images/sport.jpg" alt="Card image cap">
-            <a href="#!">
-              <div class="mask rgba-white-slight"></div>
-            </a>
-          </div>
-
-          <!--Card content-->
-          <div class="card-body">
-
-            <!--Title-->
-            <h5 class="card-title text-center">Sportwear</h5>
-            <!--Text-->
-            {{!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-              card's content.</p>
-            <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-            <button type="button" class="btn btn-light-blue btn-md">Read more</button> --}}
-
-          </div>
-
-        </div>
-        <!-- Card -->
-      </div>
-      <div class="col mb-4">
-        <div class="card h-100">
-          <!--Card image-->
-          <div class="view overlay">
-            <img class="card-img-top" src="/images/watch.jpg" alt="Card image cap">
-            <a href="#!">
-              <div class="mask rgba-white-slight"></div>
-            </a>
-          </div>
-
-          <!--Card content-->
-          <div class="card-body">
-
-            <!--Title-->
-            <h5 class="card-title text-center">Watches</h5>
-            <!--Text-->
-            {{!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-              card's content.</p>
-            <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-            <button type="button" class="btn btn-light-blue btn-md">Read more</button> --}}
-
-          </div>
-
-        </div>
-        <!-- Card -->
-      </div>
+      {{/each}}
     </div>
   </div>
 </section>

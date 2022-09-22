@@ -45,6 +45,28 @@ module.exports = {
         })
     },
 
+    addBanner: (banner, callback) => {
+        db.get().collection(collection.BANNER_COLLECTION).insertOne(banner).then((data) => {
+            callback(data.insertedId)
+        })
+    },
+
+    getAllBanner: () => {
+        return new Promise(async (resolve, reject) => {
+            let banner = await db.get().collection(collection.BANNER_COLLECTION).find().toArray()
+            resolve(banner)
+        })
+    },
+
+    deleteBanner: (bannerid) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.BANNER_COLLECTION).remove({ _id: objectId(bannerid) }).then((response) => {
+                resolve(response)
+            })
+        })
+    },
+
+
     addCategory: (category, callback) => {
         db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {
             callback(data.insertedId)
@@ -194,7 +216,7 @@ module.exports = {
                 {
                     $match: {
                         date: {
-                            $gte: new Date(new Date().getMonth()-10)
+                            $gte: new Date(new Date().getMonth() - 10)
                         },
                     }
                 },
@@ -227,7 +249,7 @@ module.exports = {
                 {
                     $match: {
                         date: {
-                            $gte: new Date(new Date().getYear()-10)
+                            $gte: new Date(new Date().getYear() - 10)
                         },
                     }
                 },

@@ -1,0 +1,112 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script src="js/signup-form.js"></script>
+
+<style>
+    #wrap-jquery-error {
+        display: flex;
+        flex-direction: column;
+
+    }
+</style>
+
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="container d-flex justify-content-end mt-2 mb-1">
+                <a class="btn btn-success" data-toggle="collapse" href="#collapseExample" role="button"
+                    aria-expanded="false" aria-controls="collapseExample">
+                    Add Banner
+                </a>
+            </div>
+            <div class="collapse  mb-1" id="collapseExample">
+                <div class=" text-center card card-body border border-2">
+                    <span>Upload Banner</span>
+                    <div class="d-flex justify-content-around">
+                        <form action="/admin/addbanner" method="post" class="form-inline " enctype="multipart/form-data"
+                            id="form">
+                            <div class="form-group mb-2" id="wrap-jquery-error">
+                                <input type="text" class="form-control" name="bheading" placeholder="Heading" required>
+                            </div>
+                            <div class="form-group mx-sm-3 mb-2" id="wrap-jquery-error">
+                                <input type="text" class="form-control" name="description" placeholder="Description"
+                                    required>
+                            </div>
+                            <div class="form-group mx-sm-3 mb-2" id="wrap-jquery-error">
+                                <input type="file" class="form-control" name="bImage" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary mb-2">Submit Banner</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <table id="example" class="table table-striped nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Heading</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Image</th>
+                        <th class="text-center" scope="col">Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each banner}}
+                    <tr>
+                        <th scope="row">{{@index}}</th>
+                        <td>{{this.bheading}}</td>
+                        <td>{{this.description}}</td>
+                        <td><img style="width: 50px;height: 50px;" src="/banner-images/{{this._id}}.jpg" alt=""></td>
+                        <td class="text-center">
+                            {{!-- <a href="/admin/products/edit-product/{{this._id}}" class="btn btn-primary">Edit</a>
+                            --}}
+                            <a href="/admin/banner/delete-banner/{{this._id}}" class="btn btn-danger"
+                                onclick="return confirm('Are you sure you want to delete {{this.bheading}}')"
+                                style="background-color: #f93154;">Delete</a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.modal({
+                        header: function (row) {
+                            var data = row.data();
+                            return 'Details for ' + data[0] + ' ' + data[1];
+                        }
+                    }),
+                    renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                        tableClass: 'table'
+                    })
+                }
+            }
+        });
+    });
+</script>
+
+<script>
+    jQuery('#form').validate({
+        rules: {
+            categoryName: 'required',
+            description: 'required',
+            cImage: 'required',
+        }, messages: {
+            pName: 'Please Enter Valid Name',
+            description: 'Please Enter Description',
+            cImage: 'Please Enter Image',
+        }, submitHandler: function (form) {
+            form.submit();
+        }
+    })
+</script>

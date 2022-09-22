@@ -33,7 +33,7 @@ router.post('/login', (req, res) => {
 })
 
 
-router.get('/',async (req, res, next)=> {
+router.get('/', async (req, res, next) => {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
   if (req.session.admin == true) {
     let usersCount = await adminHelper.getUsersCount()
@@ -43,31 +43,28 @@ router.get('/',async (req, res, next)=> {
     let weeks = await adminHelper.getWeeks()
     let months = await adminHelper.getMonths()
     let years = await adminHelper.getYears()
-    console.log(years);
     /////////WEEK/////////////
     let weekYAxis = []
     let weekXAxis = []
-    for (val of weeks){
+    for (val of weeks) {
       weekYAxis.push(val.count)
       weekXAxis.push(val._id)
     }
     ////////////Month//////////////
     let monthYAxis = []
     let monthXAxis = []
-    for (val of months){
+    for (val of months) {
       monthYAxis.push(val.count)
       monthXAxis.push(val._id)
     }
     /////////YEAR/////////////
     let yearYAxis = []
     let yearXAxis = []
-    for (val of years){
+    for (val of years) {
       yearYAxis.push(val.count)
       yearXAxis.push(val._id)
     }
-    console.log(yearXAxis);
-    console.log(yearYAxis);
-    res.render('admin', { admin: true ,usersCount,ordersCount,productsCount,total,weekYAxis,weekXAxis,monthXAxis,monthYAxis,yearXAxis,yearYAxis})
+    res.render('admin', { admin: true, usersCount, ordersCount, productsCount, total, weekYAxis, weekXAxis, monthXAxis, monthYAxis, yearXAxis, yearYAxis })
   } else {
     res.redirect('/admin/login')
   }
@@ -77,6 +74,43 @@ router.get('/logout', (req, res) => {
   req.session.admin = null
   res.redirect('/admin/login')
 })
+/////////////////////////////////BANNER//////////////////////////////////////////
+
+router.post('/addbanner', (req, res) => {
+  res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
+  if (req.session.admin == true) {
+    adminHelper.addBanner(req.body, (id) => {
+      let image = req.files.bImage
+      image?.mv('./public/banner-images/' + id + '.jpg', (err, done) => {
+        if (!err) {
+          res.redirect("/admin/banner")
+        } else {
+          console.log(err);
+        }
+      })
+    })
+  } else {
+    res.redirect('/admin/login')
+  }
+})
+
+router.get('/banner',async (req, res) => {
+  res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
+  if (req.session.admin == true) {
+    let banner = await adminHelper.getAllBanner()
+    res.render('admin-banner',{admin: true,banner})
+  } else {
+    res.redirect('/admin/login')
+  }
+})
+
+router.get('/banner/delete-banner/:id', (req, res) => {
+  let bannerId = req.params.id
+  adminHelper.deleteBanner(bannerId).then((response) => {
+    res.redirect('/admin/banner')
+  })
+})
+
 
 ///////////////////////////USERS//////////////////////////////////////
 router.get('/users', (req, res) => {
@@ -127,8 +161,6 @@ router.post('/add-product', (req, res) => {
     if (req.session.admin == true) {
       adminHelper.addProduct(req.body, (id) => {
         let image = req.files.pImage
-
-
         image?.mv('./public/product-images/' + id + '.jpg', (err, done) => {
           if (!err) {
             res.redirect("/admin/products")
@@ -144,8 +176,6 @@ router.post('/add-product', (req, res) => {
   } else {
     res.redirect('/admin/add-product')
   }
-
-
 })
 
 router.get('/products/delete-product/:id', (req, res) => {
@@ -218,8 +248,13 @@ router.get('/categories/delete-category/:id', (req, res) => {
 ///////////////////////////////////////////Orders///////////////////////////////////////////
 
 router.get('/orders', async (req, res) => {
-  let orders = await adminHelper.getAllTheOrders()
-  res.render('admin-orders', { admin: true, orders })
+  res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
+  if (req.session.admin == true) {
+    let orders = await adminHelper.getAllTheOrders()
+    res.render('admin-orders', { admin: true, orders })
+  } else {
+    res.redirect('/admin/login')
+  }
 })
 
 router.post('/orders/change-order-status', (req, res) => {

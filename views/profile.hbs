@@ -3,181 +3,242 @@
         resize: none;
     }
 </style>
-<section>
-    <section style="background-color: #eee;">
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="card mb-4">
-                        <div class="card-body text-center">
-                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                                alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
-                            <h5 class="my-3">{{user.name}}</h5>
-                            <div class="d-flex justify-content-center mb-2">
-                                <a href="" class="btn btn-outline-primary ms-1" data-toggle="modal"
-                                    data-target="#modalAddAddressForm">Add Address</a>
-                                <a href="" class="btn btn-outline-primary ms-1" data-toggle="modal"
-                                    data-target="#modalEditUserForm">Edit Profile</a>
-                            </div>
-                            <div class="text-center">
-                                <a class="btn btn-primary" href="/orders">Orders</a>
-                            </div>
-                            <div class="modal fade" id="modalEditUserForm" tabindex="-1" role="dialog"
-                                aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header text-center">
-                                            <h4 class="modal-title w-100 font-weight-bold">Edit Profile</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form method="post" action="/profile/edit-user">
-                                            <div class="my-5">
-                                                <div class="d-flex">
-                                                    <div class="col-md-2">
-                                                        <label for="name">Name</label>
-                                                    </div>
-                                                    <div class="col-md-10">
-                                                        <input id="name" type="text" name="name"
-                                                            class=" w-200px form-control mb-4" placeholder="Name"
-                                                            value="{{user.name}}" required>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex">
-                                                    <div class="col-md-2">
-                                                        <label for="email">Email</label>
-                                                    </div>
-                                                    <div class="col-md-10">
-                                                        <input id="email" type="email" name="email"
-                                                            class="form-control mb-4" placeholder="Email"
-                                                            value="{{user.email}}" required>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex">
-                                                    <div class="col-md-2">
-                                                        <label for="mobile">Mobile</label>
-                                                    </div>
-                                                    <div class="col-md-10">
-                                                        <input id="mobile" type="text" name="number"
-                                                            class="form-control mb-4" placeholder="Mobile"
-                                                            value="{{user.number}}" required>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                                <div>
-                                                    <button type="submit" class="btn btn-success rounded-pill">Edit
-                                                        User</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            {{!-- ADD ADDRESS --}}
-                            <div class="modal fade" id="modalAddAddressForm" tabindex="-1" role="dialog"
-                                aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header text-center">
-                                            <h4 class="modal-title w-100 font-weight-bold">Add Address</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form action="/addAddressProfile" method="post">
-                                            <div class="mt-2">
-                                                <div class="mx-3 mb-3">
-                                                    <label for="exampleInputAddress"
-                                                        class="form-label float-left">Address</label>
-                                                    <textarea required class="form-control" name="address"
-                                                        id="exampleInputAddress" cols="30" rows="5"></textarea>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div class="mx-3 mb-3">
-                                                    <label for="exampleInputPincode"
-                                                        class="form-label float-left">Pincode</label>
-                                                    <input type="text" class="form-control" id="exampleInputPincode"
-                                                        name="pincode">
-                                                </div>
-                                                <div class="mx-3 mb-3">
-                                                    <label for="exampleInputMobile"
-                                                        class="form-label float-left">Mobile</label>
-                                                    <input type="text" class="form-control" id="exampleInputMobile"
-                                                        name="mobile">
-                                                </div>
-                                                <input type="text" name="userId" id="" value="{{user._id}}" hidden>
-                                                <div class="mb-3 text-center">
-                                                    <button type="submit" class="btn btn-primary">Add
-                                                        Address</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            {{!-- ADD ADDRESS END --}}
+<section style="height: 500px;" style="background-color: #eee;">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="border border-2 rounded-2 card-body text-center">
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                            alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                        <h5 class="my-3">{{user.name}}</h5>
+                        <div class="d-flex justify-content-center mb-2">
+                            <a href="" class="btn btn-outline-primary ms-1" data-toggle="modal"
+                                data-target="#modalAddAddressForm">Add Address</a>
+                            <a href="" class="btn btn-outline-primary ms-1" data-toggle="modal"
+                                data-target="#modalEditUserForm">Edit Profile</a>
                         </div>
+                        <div class="text-center">
+                            <a class="btn btn-primary" href="/orders">Orders</a>
+                        </div>
+                        <div class="modal fade" id="modalEditUserForm" tabindex="-1" role="dialog"
+                            aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header text-center">
+                                        <h4 class="modal-title w-100 font-weight-bold">Edit Profile</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form method="post" action="/profile/edit-user">
+                                        <div class="my-5">
+                                            <div class="d-flex">
+                                                <div class="col-md-2">
+                                                    <label for="name">Name</label>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <input id="editName" type="text" name="name"
+                                                        class=" w-200px form-control mb-4" placeholder="Name"
+                                                        value="{{user.name}}" required>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex">
+                                                <div class="col-md-2">
+                                                    <label for="email">Email</label>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <input id="editEmail" type="email" name="email"
+                                                        class="form-control mb-4" placeholder="Email"
+                                                        value="{{user.email}}" required>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex">
+                                                <div class="col-md-2">
+                                                    <label for="mobile">Mobile</label>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <input id="editMobile" type="text" name="number"
+                                                        class="form-control mb-4" placeholder="Mobile"
+                                                        value="{{user.number}}" required>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div>
+                                                <button id="editUser" type="submit"
+                                                    class="btn btn-success rounded-pill">Edit
+                                                    User</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {{!-- ADD ADDRESS --}}
+                        <div class="modal fade" id="modalAddAddressForm" tabindex="-1" role="dialog"
+                            aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header text-center">
+                                        <h4 class="modal-title w-100 font-weight-bold">Add Address</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="/addAddressProfile" method="post">
+                                        <div class="mt-2">
+                                            <div class="mx-3 mb-3">
+                                                <label for="exampleInputAddress"
+                                                    class="form-label float-left">Address</label>
+                                                <textarea required class="form-control" name="address"
+                                                    id="addInputAddress" cols="30" rows="5"></textarea>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="mx-3 mb-3">
+                                                <label for="exampleInputPincode"
+                                                    class="form-label float-left">Pincode</label>
+                                                <input type="text" class="form-control" id="addInputPincode"
+                                                    name="pincode" required>
+                                            </div>
+                                            <div class="mx-3 mb-3">
+                                                <label for="exampleInputMobile"
+                                                    class="form-label float-left">Mobile</label>
+                                                <input type="text" class="form-control" id="addInputMobile"
+                                                    name="mobile" required>
+                                            </div>
+                                            <input type="text" name="userId" id="" value="{{user._id}}" hidden>
+                                            <div class="mb-3 text-center">
+                                                <button id="addAddress" type="submit" class="btn btn-primary">Add
+                                                    Address</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {{!-- ADD ADDRESS END --}}
                     </div>
                 </div>
-                <div class="col-lg-8">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <p class="mb-0">Full Name</p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class="text-muted mb-0">{{user.name}}</p>
-                                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="border border-2 rounded-2 card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Full Name</p>
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <p class="mb-0">Email</p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class="text-muted mb-0">{{user.email}}</p>
-                                </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">{{user.name}}</p>
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <p class="mb-0">Mobile</p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class="text-muted mb-0">{{user.number}}</p>
-                                </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Email</p>
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <p class="mb-0">Address</p>
-                                </div>
-                                {{#if userAddress}}
-                                <ul>
-                                    {{#each userAddress}}
-                                    <div class="d-flex justify-content-between">
-                                        <li class="ms-5">
-                                            <p class="text-muted mb-0 w-75">{{this.address}}, {{this.pincode}}</p>
-                                        </li>
-                                        <a href="/deleteAddress/{{this._id}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">{{user.email}}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Mobile</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">{{user.number}}</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Address</p>
+                            </div>
+                            {{#if userAddress}}
+                            <ul>
+                                {{#each userAddress}}
+                                <div class="d-flex justify-content-between">
+                                    <li class="ms-5">
+                                        <p class="text-muted mb-0 w-75">{{this.address}}, {{this.pincode}}</p>
+                                    </li>
+                                    <a role="button" onclick="deleteAddress('{{this._id}}')"><i class="fa fa-trash"
+                                            aria-hidden="true"></i></a>
+                                    {{!-- href="/deleteAddress/{{this._id}}" --}}
 
+                                </div>
 
-                                    </div>
-
-                                    {{/each}}
-                                </ul>
-                                {{else}}
-                                <p class="text-muted mb-0">No Saved Address</p>
-                                {{/if}}
-                            </div>
+                                {{/each}}
+                            </ul>
+                            {{else}}
+                            <p class="text-muted mb-0">No Saved Address</p>
+                            {{/if}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-    </section>
+    </div>
+    </div>
 </section>
+
+<script>
+    function deleteAddress(id) {
+        var addId = id
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.href = "/deleteAddress/" + addId
+                Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )
+            }
+        })
+    }
+
+    $('#addAddress').click(function () {
+        let add = $('#addInputAddress').val();
+        let pin = $('#addInputPincode').val();
+        let mob = $('#addInputMobile').val();
+        console.log(add + ' ' + pin + ' ' + ' ')
+        if (add == '' || pin == '' || mob == '') {
+            Swal.fire('Please Fill The Missing Fields')
+        } else {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your address has been saved',
+                showConfirmButton: false,
+                timer: 5000
+            })
+        }
+    })
+
+    $('#editUser').click(function () {
+        let name = $('#editName').val();
+        let email = $('#editEmail').val();
+        let mobile = $('#editMobile').val();
+        console.log(name + ' ' + email + ' ' + mobile + ' ')
+        if (name == '' || email == '' || mobile == '') {
+            Swal.fire('Please Fill The Missing Fields')
+        } else {
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your changes has been saved',
+                showConfirmButton: false,
+                timer: 5000
+            })
+        }
+    })
+
+</script>

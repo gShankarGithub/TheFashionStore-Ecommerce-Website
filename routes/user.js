@@ -5,9 +5,10 @@ var adminHelper = require('../helpers/admin-helpers');
 const userHelpers = require('../helpers/user-helpers');
 
 
+
 const serviceSID = "VA464df13e96e261c09240e9e5d16bc514"
 const accountSID = "ACd9861b7ef28f4c277b12a711ef740444"
-const authToken = "1b60bd11192e9f4c31b2ee12fc750a43"
+const authToken = "1ee612732f59dc02a571b0f230aee13c"
 const client = require('twilio')(accountSID, authToken)
 
 
@@ -25,12 +26,13 @@ const verifyLogin = (req, res, next) => {
 router.get('/', async function (req, res, next) {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
   let categories = await adminHelper.getAllCategory()
+  let banner = await adminHelper.getAllBanner()
   if (req.session.user) {
     let user = req.session.username
     let cartCount = await userHelper.getCartCount(user._id)
-    res.render('index', { admin: false, user, categories, cartCount });
+    res.render('index', { admin: false, user, categories, cartCount, banner });
   } else {
-    res.render('index', { admin: false, categories })
+    res.render('index', { admin: false, categories, banner })
   }
 })
 router.get('/login', (req, res) => {
@@ -72,15 +74,11 @@ router.post('/login/otplogin', (req, res) => {
       req.session.username = response.user
       req.session.usernumber = response.user.number
       req.session.user = true
-      client.verify
-        .services(serviceSID)
-        .verifications.create({
-          to: `+91${req.body.number}`,
-          channel: "sms"
-        })
-        .then((response) => {
-          res.redirect('/login/otplogin/otpconfirm')
-        })
+      console.log(number);
+      client.verify.v2.services(serviceSID)
+        .verifications
+        .create({ to: `+91${req.body.number}`, channel: 'sms' })
+        .then(verification => res.redirect("/login/otplogin/otpconfirm"));
     } else {
       req.session.userLoginErr = "Invalid Number"
       res.redirect('/login/otplogin')
@@ -96,15 +94,10 @@ router.get('/login/otplogin/otpconfirm', (req, res) => {
 
 router.post('/login/otplogin/otpconfirm', (req, res) => {
   const { otp } = req.body
-  client.verify
-    .services(serviceSID)
-    .verificationChecks.create({
-      to: `+91${req.session.usernumber}`,
-      code: otp
-    })
-    .then((resp) => {
-      res.redirect('/')
-    })
+  client.verify.v2.services(serviceSID)
+    .verificationChecks
+    .create({ to: `+91${req.session.usernumber}`, code: otp })
+    .then(verification_check => res.redirect('/'));
 })
 
 router.get('/logout', (req, res) => {
@@ -149,10 +142,16 @@ router.post('/addAddressProfile', async (req, res) => {
   res.redirect('/profile')
 })
 
-router.get('/deleteAddress/:id',(req,res)=>{
-  userHelper.deleteAddress(req.params.id).then(()=>{
+router.get('/deleteAddress/:id', (req, res) => {
+  userHelper.deleteAddress(req.params.id).then(() => {
     res.redirect('/profile')
   })
+})
+
+router.post('/addAddress', async (req, res) => {
+  console.log(req.body);
+  await userHelper.addAddress(req.body)
+  res.redirect('/place-order')
 })
 
 ///////////////////////Shop, ProductList & Product Details///////////////////////////////////////
@@ -196,6 +195,34 @@ router.get('/category/:categoryName', async (req, res) => {
   })
 })
 
+/////////////////////////////////////////Wishlist///////////////////////////////////////////////////////
+
+router.get('/add-to-wishlist/:id', (req, res) => {
+  userHelper.addToWishlist(req.params.id, req.session.username._id).then(() => {
+    res.json({ status: true })
+  })
+})
+
+router.get('/remove-from-wishlist/:id', async(req, res) => {
+ await userHelper.addToWishlist(req.params.id, req.session.username._id).then(() => {
+    res.redirect('/wishlist')
+  })
+})
+
+router.get('/wishlist', verifyLogin, async (req, res) => {
+  let user = req.session.username
+  let categories = await adminHelper.getAllCategory()
+  let products = await userHelper.getWishlistedProducts(req.session.username._id)
+  if (products.length) {
+    console.log(products);
+    res.render('wishlist', { user, categories, products })
+  } else {
+    res.send("hello")
+  }
+
+})
+
+
 
 
 /////////////////////////////////////////Cart////////////////////////////////////////////////////////////
@@ -236,11 +263,7 @@ router.post('/remove-cart-item', (req, res) => {
   })
 })
 
-router.post('/addAddress', async (req, res) => {
-  console.log(req.body);
-  await userHelper.addAddress(req.body)
-  res.redirect('/place-order')
-})
+
 
 router.get('/place-order', verifyLogin, async (req, res) => {
   let products = await userHelper.getCartProducts(req.session.username._id)

@@ -334,9 +334,7 @@
                         <button onclick="addToCart('{{product._id}}')" class="btn btn-outline-warning btn-long cart">Add to Cart</button>
                     {{!-- </a> --}}
                     {{!-- <button class="btn btn-warning btn-long buy">Buy it Now</button> --}}
-                    <button class="btn btn-light wishlist">
-                        <i class="fa fa-heart"></i>
-                    </button>
+                    <button onclick="addToWishlist('{{product._id}}')" class="btn btn-light wishlist"><i class="fa fa-heart"></i></button>
                 </div>
                 <hr>
                 <div class="product-description">
