@@ -263,8 +263,6 @@ router.post('/remove-cart-item', (req, res) => {
   })
 })
 
-
-
 router.get('/place-order', verifyLogin, async (req, res) => {
   let products = await userHelper.getCartProducts(req.session.username._id)
   let categories = await adminHelper.getAllCategory()
@@ -286,7 +284,7 @@ router.post('/place-order', async (req, res) => {
   if (products.length > 0) {
     totalPrice = await userHelper.getTotalAmount(req.body.userId)
     userHelper.placeOrder(req.body, products, totalPrice).then((orderId) => {
-      if (req.body['payment-method'] === 'COD') {
+      if (req.body['payment-method'] === 'COD'|| 'PAYPAL') {
         res.json({ codSuccess: true })
       } else {
         userHelper.generateRazorpay(orderId, totalPrice).then((response) => {

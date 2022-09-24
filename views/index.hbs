@@ -1,4 +1,18 @@
-<section class="container-fluid mt-2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@400;500;700&family=Open+Sans:wght@300;400;500;600&family=Ropa+Sans&display=swap"
+  rel="stylesheet">
+
+<style>
+
+  .homepageHeading {
+    font-family: 'Kaisei Tokumin', serif;
+    font-family: 'Open Sans', sans-serif;
+    font-family: 'Ropa Sans', sans-serif;
+  }
+</style>
+<section class=" py-3 container-fluid ">
   <div id="carouselExampleInterval" class="carousel slide" data-mdb-ride="carousel">
     <div class="carousel-inner">
       <div class="carousel-item active" data-mdb-interval="2000">
@@ -25,14 +39,14 @@
 {{!-- Section for categories --}}
 <section>
   <div class="text-center my-5">
-    <h2>CATEGORIES</h2>
+    <h2 class="homepageHeading">CATEGORIES</h2>
   </div>
   <div class="container">
     <div class="row row-cols-1 row-cols-md-5">
       {{!-- Begin --}}
       {{#each categories}}
       <div class="col mb-4">
-        <div class="card h-100">
+        <div class="border border-2 card h-100">
           <!--Card image-->
           <div class="view overlay">
             <img class="card-img-top" src="/category-images/{{this._id}}.jpg" alt="Card image cap">
@@ -62,8 +76,8 @@
   </div>
 </section>
 <section>
-  <div class="text-center mt-5">
-    <h2>Top Picks</h2>
+  <div class="text-center my-5">
+    <h2 class="homepageHeading">TOP PICKS</h2>
   </div>
   <div class="container">
     <div class="row">
@@ -82,7 +96,7 @@
             <div class="carousel-item active">
               <div class="row">
                 <div class="col-md-4 mb-3">
-                  <div class="card">
+                  <div class="border border-2 card">
                     <a href="">
                       <img class="img-fluid" alt="100%x280"
                         src="https://assets.myntassets.com/f_webp,w_196,c_limit,fl_progressive,dpr_2.0/assets/images/2020/8/25/085719b1-c71e-4f47-950c-9a6b7f291fac1598348260370-Jack-_-Jones.jpg">
@@ -97,7 +111,7 @@
                   </div>
                 </div>
                 <div class="col-md-4 mb-3">
-                  <div class="card">
+                  <div class="border border-2 card">
                     <a href="">
                       <img class="img-fluid" alt="100%x280"
                         src="https://assets.myntassets.com/f_webp,w_245,c_limit,fl_progressive,dpr_2.0/assets/images/2020/8/31/8d5afb84-a464-40af-9971-2e9f0827e9b71598892377591-UCB.jpg">
@@ -110,7 +124,7 @@
                   </div>
                 </div>
                 <div class="col-md-4 mb-3">
-                  <div class="card">
+                  <div class="text-center border border-2 card">
                     <a href="">
                       <img class="img-fluid" alt="100%x280"
                         src="https://assets.myntassets.com/f_webp,w_245,c_limit,fl_progressive,dpr_2.0/assets/images/2020/8/31/cec595c6-c7ec-4259-af8b-997a33a09ce71598892377444-Puma.jpg">
@@ -118,7 +132,6 @@
                     {{!-- <div class="card-body">
                       <h4 class="card-title">Special title treatment</h4>
                       <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-
                     </div> --}}
                   </div>
                 </div>

@@ -378,7 +378,7 @@ module.exports = {
     placeOrder: (order, products, total) => {
         return new Promise(async (resolve, reject) => {
             console.log(order);
-            let status = order["payment-method"] === 'COD' ? 'placed' : 'pending'
+            let status = order["payment-method"] === 'COD' || 'PAYPAL' ? 'placed' : 'pending'
             let location = await db.get().collection(collection.ADDRESS_COLLECTION).findOne({ _id: objectId(order.addressId) })
 
             let orderObj = {
@@ -395,7 +395,7 @@ module.exports = {
                 date: new Date()
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
-                if (order["payment-method"] == 'COD') {
+                if (order["payment-method"] == 'COD'|| 'PAYPAL') {
                     db.get().collection(collection.CART_COLLECTION).remove({ user: objectId(order.userId) })
                 }
 

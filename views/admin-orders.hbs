@@ -7,7 +7,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <table id="example" class="table table-striped" style="width:100%">
+                <table id="exampleOrderAdmin" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
                             <th scope="col">Date</th>
@@ -114,7 +114,9 @@
 </section>
 <script>
     $(document).ready(function () {
-        $('#example').DataTable({
+        $('#exampleOrderAdmin').DataTable({
+            "order": [[0, "desc"]],
+            "columnDefs": [{ "targets": 0, "type": "date-eu" }],
             responsive: {
                 details: {
                     display: $.fn.dataTable.Responsive.display.modal({

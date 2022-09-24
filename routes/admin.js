@@ -251,6 +251,9 @@ router.get('/orders', async (req, res) => {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
   if (req.session.admin == true) {
     let orders = await adminHelper.getAllTheOrders()
+    for (val of orders) {
+      val.date = new Date(val.date).toLocaleDateString()
+    }
     res.render('admin-orders', { admin: true, orders })
   } else {
     res.redirect('/admin/login')

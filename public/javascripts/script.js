@@ -1,25 +1,26 @@
-function addToCart(proId){
+function addToCart(proId) {
     $.ajax({
-        url: '/add-to-cart/'+proId,
+        url: '/add-to-cart/' + proId,
         method: 'get',
-        success: (response)=>{
-            if(response.status){
-                let count =$('#cart-count').html()
-                count=parseInt(count)+1
+        success: (response) => {
+            if (response.status) {
+                let count = $('#cart-count').html()
+                count = parseInt(count) + 1
                 $('#cart-count').html(count)
             }
         }
     })
 }
 
-function addToWishlist(proId){
+function addToWishlist(proId) {
     $.ajax({
-        url: '/add-to-wishlist/'+proId,
+        url: '/add-to-wishlist/' + proId,
         method: 'get',
-        success: (response)=>{
-            if(response.status){
+        success: (response) => {
+            if (response.status) {
                 location.reload()
             }
         }
     })
 }
+

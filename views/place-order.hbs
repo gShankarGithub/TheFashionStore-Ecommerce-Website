@@ -1,3 +1,5 @@
+<script
+    src="https://www.paypal.com/sdk/js?client-id=AQ_kHRzXatEtPRGxNXNmwIfTT7ISqN365TirB1DY9FjJoU2J1j5F4bvHM_DXICP26oXoGd-WY_iBURrm&currency=USD"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
     @media (min-width: 1025px) {
@@ -37,6 +39,14 @@
             border-bottom-left-radius: 16px;
             border-bottom-right-radius: 16px;
         }
+    }
+
+    .clr {
+        display: none;
+    }
+
+    .disbtn {
+        display: block;
     }
 </style>
 <section class="h-100 " style="background-color: #d2c9ff;">
@@ -128,28 +138,40 @@
                                     <h5 class="text-uppercase">Payment Method</h5>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="payment-method"
-                                            id="flexRadioDefault1" value="COD">
-                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            id="flexRadioDefault1" value="COD" required onclick="displayCheckout()">
+                                        <label class="form-check-label" for="flexRadioDefault1" >
                                             Cash On Delivery
                                         </label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="payment-method"
-                                            value="ONLINE" id="flexRadioDefault2" checked>
+                                            value="ONLINE" id="flexRadioDefault2" onclick="displayCheckout()" required>
                                         <label class="form-check-label" for="flexRadioDefault2">
-                                            Card Payment
+                                            Razorpay
                                         </label>
                                     </div>
-                                    <hr class="my-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="payment-method"
+                                            value="PAYPAL" id="flexRadioDefault3" onclick="displayPaypal()" required>
+                                        <label class="form-check-label" for="flexRadioDefault3">
+                                            Paypal
+                                        </label>
+                                    </div>
+                                    
+                                    <hr class="mt-2 mb-4">
 
                                     <div class="d-flex justify-content-between mb-5">
                                         <h5 class="text-uppercase">Total price</h5>
                                         <h5>₹ {{total}}</h5>
                                     </div>
-                                    <button type="submit" class="btn btn-dark btn-block btn-lg"
-                                        data-mdb-ripple-color="dark">Checkout</button>
+                                    <div class="clr mt-4" id="paypal"></div>
+                                    <div class="clr" id="checkout-button">
+                                        <button id="placeOrder"  type="submit" class="btn btn-dark btn-block btn-lg"
+                                            data-mdb-ripple-color="dark">Checkout</button>
+                                    </div>
 
                                     </form>
+
                                 </div>
                             </div>
                         </div>
@@ -161,6 +183,54 @@
 </section>
 
 <script>
+
+    /////////////////////////////////PAYPAL/////////////////////////////////////////////////////
+    paypal.Buttons({
+        // Sets up the transaction when a payment button is clicked
+        createOrder: (data, actions) => {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: {{ total }} // Can also reference a variable or function
+                    }
+    }]
+            });
+        },
+    // Finalize the transaction after payer approval
+    onApprove: (data, actions) => {
+        return actions.order.capture().then(function (orderData) {
+            // Successful capture! For dev/demo purposes:
+            console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+            const transaction = orderData.purchase_units[0].payments.captures[0];
+            alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`);
+            // When ready to go live, remove the alert and show a success message within this page. For example:
+            // const element = document.getElementById('paypal-button-container');
+            // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+            // Or go to another URL:  actions.redirect('thank_you.html');
+            $("#placeOrder").trigger("click")
+        });
+    }
+    }).render('#paypal');
+
+    function displayCheckout() {
+
+        let list1 = document.getElementById("checkout-button").classList
+        let list2 = document.getElementById("paypal").classList;
+        list1.add('disbtn')
+        list2.remove('disbtn')
+    }
+
+    function displayPaypal() {
+        let list1 = document.getElementById("checkout-button").classList
+        let list2 = document.getElementById("paypal").classList;
+        list1.remove('disbtn')
+        list2.add('disbtn')
+
+    }
+
+
+    ////////////////////////////////PAYPAL///////////////////////////////////
+
     $("#checkout-form").submit((e) => {
         e.preventDefault()
         $.ajax({
@@ -176,6 +246,8 @@
             }
         })
     })
+
+
 
     function razorpayPayment(order) {
         var options = {
