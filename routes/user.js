@@ -203,8 +203,8 @@ router.get('/add-to-wishlist/:id', (req, res) => {
   })
 })
 
-router.get('/remove-from-wishlist/:id', async(req, res) => {
- await userHelper.addToWishlist(req.params.id, req.session.username._id).then(() => {
+router.get('/remove-from-wishlist/:id', async (req, res) => {
+  await userHelper.addToWishlist(req.params.id, req.session.username._id).then(() => {
     res.redirect('/wishlist')
   })
 })
@@ -263,15 +263,36 @@ router.post('/remove-cart-item', (req, res) => {
   })
 })
 
+/////////////////////////////////////Coupon///////////////////////////////
+
+router.post('/apply-coupon', async (req, res) => {
+  console.log(req.body);
+  console.log("ethi 1");
+  let couponDetails = await userHelper.getCouponDetails(req.body)
+  if (couponDetails) {
+    let percent = parseInt(couponDetails.percent, 10)
+    let offer = req.body.total * percent / 100
+    let total = req.body.total - offer
+    req.session.total = total
+    req.session.coupon = true
+    res.json(total)
+  } else {
+    res.json(null)
+  }
+})
+
+//////////////////////////////////////////////////////////////////////////
+
 router.get('/place-order', verifyLogin, async (req, res) => {
   let products = await userHelper.getCartProducts(req.session.username._id)
   let categories = await adminHelper.getAllCategory()
   let address = await userHelper.getAddress(req.session.username._id)
+  let coupons = await adminHelper.getAllCoupons()
   let total = 0
   if (products.length > 0) {
     total = await userHelper.getTotalAmount(req.session.username._id)
     let user = req.session.username
-    res.render('place-order', { user, total, categories, address })
+    res.render('place-order', { user, total, categories, address, coupons })
   } else {
     res.redirect('/cart')
   }
@@ -282,9 +303,15 @@ router.post('/place-order', async (req, res) => {
   let products = await userHelper.getCartProductList(req.body.userId)
   let totalPrice = 0
   if (products.length > 0) {
-    totalPrice = await userHelper.getTotalAmount(req.body.userId)
+    if (req.session.coupon) {
+      totalPrice = req.session.total
+      console.log(totalPrice);
+    } else {
+      totalPrice = await userHelper.getTotalAmount(req.body.userId)
+    }
+    req.session.coupon = null
     userHelper.placeOrder(req.body, products, totalPrice).then((orderId) => {
-      if (req.body['payment-method'] === 'COD'|| 'PAYPAL') {
+      if (req.body['payment-method'] === 'COD' || 'PAYPAL') {
         res.json({ codSuccess: true })
       } else {
         userHelper.generateRazorpay(orderId, totalPrice).then((response) => {

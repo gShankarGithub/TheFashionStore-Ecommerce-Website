@@ -375,9 +375,22 @@ module.exports = {
             resolve(total[0].total)
         })
     },
+////////////////////////////////////////////////////COUPON/////////////////////////////////////////////////////////////////
+
+getCouponDetails:(details)=>{
+    return new Promise(async(resolve,reject)=>{
+      let couponDetails = await db.get().collection(collection.COUPON_COLLECTION).findOne({couponName:details.couponName})
+      resolve(couponDetails)
+    })
+},
+
+
+/////////////////////////////////////////////////////COUPON END///////////////////////////////////////////////////////////
+
+
+
     placeOrder: (order, products, total) => {
         return new Promise(async (resolve, reject) => {
-            console.log(order);
             let status = order["payment-method"] === 'COD' || 'PAYPAL' ? 'placed' : 'pending'
             let location = await db.get().collection(collection.ADDRESS_COLLECTION).findOne({ _id: objectId(order.addressId) })
 

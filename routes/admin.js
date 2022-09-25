@@ -94,11 +94,11 @@ router.post('/addbanner', (req, res) => {
   }
 })
 
-router.get('/banner',async (req, res) => {
+router.get('/banner', async (req, res) => {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
   if (req.session.admin == true) {
     let banner = await adminHelper.getAllBanner()
-    res.render('admin-banner',{admin: true,banner})
+    res.render('admin-banner', { admin: true, banner })
   } else {
     res.redirect('/admin/login')
   }
@@ -133,6 +133,28 @@ router.get('/users/block-user/:id', (req, res) => {
 router.get('/users/unblock-user/:id', (req, res) => {
   adminHelper.unblockUser(req.params.id).then(() => {
     res.redirect('/admin/users')
+  })
+})
+/////////////////////////////////Coupon//////////////////////////////////////////////
+
+router.get('/coupon', async (req, res) => {
+  res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
+  let yourDate = new Date()
+  let data = yourDate.toISOString().split('T')[0]
+  console.log(data);
+  console.log();
+  if (req.session.admin == true) {
+    let coupons = await adminHelper.getAllCoupons()
+    res.render('admin-coupon', { admin: true, coupons })
+  } else {
+    res.redirect('/admin/login')
+  }
+
+})
+
+router.post('/coupon/add-coupon', (req, res) => {
+  adminHelper.addCoupon(req.body).then(() => {
+    res.redirect('/admin/coupon')
   })
 })
 

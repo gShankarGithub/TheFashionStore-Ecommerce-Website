@@ -66,6 +66,21 @@ module.exports = {
         })
     },
 
+    addCoupon: (couponData) => {
+        couponData.status = "ACTIVE"
+        return new Promise(async (resolve, reject) => {
+            db.get().collection(collection.COUPON_COLLECTION).insertOne(couponData).then(()=>{
+                resolve()
+            })
+        })
+    },
+
+    getAllCoupons:()=>{
+        return new Promise(async(resolve, reject)=>{
+           let coupons = await db.get().collection(collection.COUPON_COLLECTION).find().toArray()
+           resolve(coupons)
+        })
+    },
 
     addCategory: (category, callback) => {
         db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {

@@ -1,0 +1,82 @@
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="d-flex justify-content-end mt-2 mb-1">
+                <a href="" class="btn btn-outline-dark ms-1" data-toggle="modal" data-target="#modalAddAddressForm">Add
+                    Coupon</a>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <table id="example" class="table table-striped nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th scope="col">Coupon Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Discount In Percentage</th>
+                        <th scope="col">Expiry Date</th>
+                        <th class="text-center" scope="col">Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each coupons}}
+                    <tr>
+                        <td>{{this.couponName}}</td>
+                        <td>{{this.description}}</td>
+                        <td>{{this.percent}}</td>
+                        <td>{{this.expDate}}</td>
+                        <td class="text-center">
+                            {{!-- <a href="/admin/products/edit-product/{{this._id}}" class="btn btn-primary">Edit</a>
+                            --}}
+                            <a href="/admin/categories/delete-category/{{this._id}}" class="btn btn-danger"
+                                onclick="return confirm('Are you sure you want to delete {{this.categoryName}}')"
+                                style="background-color: #f93154;">Delete</a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {{!-- ADD COUPON --}}
+    <div class="modal fade" id="modalAddAddressForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">Add Coupon</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/admin/coupon/add-coupon" method="post">
+                    <div>
+                        <div class="mx-3 mb-3">
+                            <label for="inputCouponName" class="form-label float-left">Coupon Name</label>
+                            <input type="text" class="form-control" id="inputCouponName" name="couponName" required>
+                        </div>
+                        <div class="mx-3 mb-3">
+                            <label for="inputDescription" class="form-label float-left">Description</label>
+                            <input type="text" class="form-control" id="inputDescription" name="description" required>
+                        </div>
+                        <div class="mx-3 mb-3">
+                            <label for="inputPercentage" class="form-label float-left">Discount In
+                                Percentage</label>
+                            <input type="number" class="form-control" id="inputPercentage" name="percent" required>
+                        </div>
+                        <div class="mx-3 mb-3">
+                            <label for="inputExpDate" class="form-label float-left">Expiry Date</label>
+                            <input type="date" class="form-control" id="inputExpDate" name="expDate" required>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <button id="addCoupon" type="submit" class="btn btn-primary">Add
+                                Coupon</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</section>

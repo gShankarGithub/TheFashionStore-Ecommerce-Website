@@ -139,7 +139,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="payment-method"
                                             id="flexRadioDefault1" value="COD" required onclick="displayCheckout()">
-                                        <label class="form-check-label" for="flexRadioDefault1" >
+                                        <label class="form-check-label" for="flexRadioDefault1">
                                             Cash On Delivery
                                         </label>
                                     </div>
@@ -157,16 +157,27 @@
                                             Paypal
                                         </label>
                                     </div>
-                                    
+                                    <hr class="mt-2 mb-4">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Coupon Discount:</span>
+                                        <a class="text-danger" href="" data-mdb-toggle="modal"
+                                            data-mdb-target="#exampleModal">Show
+                                            Coupon</a>
+                                    </div>
+                                    <div class="d-flex">
+                                        <input name="couponName" type="text">
+                                        <a onclick="addCoupon()" class="btn btn-primary ms-2">Apply</a>
+                                    </div>
+                                    <span id="errorCoupon"></span>
                                     <hr class="mt-2 mb-4">
 
                                     <div class="d-flex justify-content-between mb-5">
-                                        <h5 class="text-uppercase">Total price</h5>
-                                        <h5>₹ {{total}}</h5>
+                                        <h5 class="text-uppercase">Total price in ₹ </h5>
+                                        <h5 id="totalAmount">{{total}}</h5>
                                     </div>
                                     <div class="clr mt-4" id="paypal"></div>
                                     <div class="clr" id="checkout-button">
-                                        <button id="placeOrder"  type="submit" class="btn btn-dark btn-block btn-lg"
+                                        <button id="placeOrder" type="submit" class="btn btn-dark btn-block btn-lg"
                                             data-mdb-ripple-color="dark">Checkout</button>
                                     </div>
 
@@ -174,6 +185,30 @@
 
                                 </div>
                             </div>
+                            {{!-- coupon --}}
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">COUPONS</h5>
+                                            <button type="button" class="btn-close" data-mdb-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input class="form-check-input" name="total" value="{{total}}" type="text"
+                                                hidden>
+                                            {{#each coupons}}
+                                            <ul>
+                                                <li>{{this.couponName}}</li>
+                                                <span>{{this.description}}</span>
+                                            </ul>
+                                            {{/each}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{!-- coupon end --}}
                         </div>
                     </div>
                 </div>
@@ -182,7 +217,40 @@
     </div>
 </section>
 
-<script>
+<script defer>
+    /////////////////////////////////////COUPON/////////////////////////////////////////
+    function addCoupon() {
+        let couponName = document.querySelector("input[name='couponName']").value
+        let total = document.querySelector("input[name='total']").value
+        $.ajax({
+            url: '/apply-coupon',
+            data: {
+                couponName: couponName,
+                total: total
+            },
+            method: 'post',
+            success: (total) => {
+                if (total) {
+                    console.log(total)
+                    document.getElementById('totalAmount').innerText = total
+                } else {
+                    console.log("ELSE")
+                    error.innerHTML = "Coupon Not Available"
+                }
+
+            }
+        })
+
+    }
+
+
+
+
+
+
+    /////////////////////////////////////COUPON END/////////////////////////////////////
+
+
 
     /////////////////////////////////PAYPAL/////////////////////////////////////////////////////
     paypal.Buttons({
@@ -191,7 +259,7 @@
             return actions.order.create({
                 purchase_units: [{
                     amount: {
-                        value: {{ total }} // Can also reference a variable or function
+                        value: {{total}} // Can also reference a variable or function
                     }
     }]
             });
@@ -229,7 +297,7 @@
     }
 
 
-    ////////////////////////////////PAYPAL///////////////////////////////////
+    ////////////////////////////////PAYPALEND///////////////////////////////////
 
     $("#checkout-form").submit((e) => {
         e.preventDefault()
