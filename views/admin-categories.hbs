@@ -68,6 +68,7 @@
                                 <th scope="col">No</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Description</th>
+                                <th scope="col">Offer - In Percentage </th>
                                 <th scope="col">Image</th>
                                 <th class="text-center" scope="col">Options</th>
                             </tr>
@@ -78,6 +79,17 @@
                                 <th scope="row">{{@index}}</th>
                                 <td>{{this.categoryName}}</td>
                                 <td>{{this.description}}</td>
+                                <td>
+                                    <div class="inline-block">
+                                        <form action="/admin/change-category-offer" method="post">
+                                            <input name="offer" value="{{this.offer}}" type="number">
+                                            <input type="text" value="{{this._id}}" name="categoryId" hidden>
+                                            <input type="text" value="{{this.categoryName}}" name="categoryName" hidden>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </form>
+                                    </div>
+
+                                </td>
                                 <td><img style="width: 50px;height: 50px;" src="/category-images/{{this._id}}.jpg"
                                         alt=""></td>
                                 <td class="text-center">
@@ -98,7 +110,7 @@
         </div>
         <div class="tab-pane fade" id="ex-with-icons-tabs-2" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
             <div class="container">
-                234567
+
             </div>
         </div>
         {{!-- <div class="tab-pane fade" id="ex-with-icons-tabs-3" role="tabpanel"

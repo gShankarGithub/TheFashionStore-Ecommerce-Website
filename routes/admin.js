@@ -180,6 +180,7 @@ router.get('/add-product', (req, res) => {
 router.post('/add-product', (req, res) => {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
   if (req.files) {
+    console.log("got into route");
     if (req.session.admin == true) {
       adminHelper.addProduct(req.body, (id) => {
         let image = req.files.pImage
@@ -264,6 +265,21 @@ router.get('/categories/delete-category/:id', (req, res) => {
   let categoryId = req.params.id
   adminHelper.deleteCategory(categoryId).then((response) => {
     res.redirect('/admin/categories')
+  })
+})
+
+router.post('/change-category-offer',(req,res)=>{
+  let details = req.body
+  let offer = details.offer
+  adminHelper.changeCategoryOffer(details).then(async()=>{
+   let products = await userHelper.findProductCategory(details.categoryName)
+   for (val of products){
+    val.offPrice = val.price
+    let price = Math.round(Number(val.offPrice-(val.offPrice * offer)/100))
+    console.log(price);
+    await adminHelper.updateOffPrice(val._id,price)
+   }
+   res.redirect('/admin/categories')
   })
 })
 

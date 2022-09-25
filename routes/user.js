@@ -237,10 +237,14 @@ router.get('/cart', verifyLogin, async (req, res) => {
   let user = req.session.username
   let categories = await adminHelper.getAllCategory()
   let total = 0
+  let offTotal =0
+  let discount =0
   let products = await userHelper.getCartProducts(req.session.username._id)
   if (products.length > 0) {
     total = await userHelper.getTotalAmount(req.session.username._id)
-    res.render('cart', { products, user, total, categories })
+    offTotal = await userHelper.getOfferTotalAmount(req.session.username._id)
+    let discount = Math.round(Number(total - offTotal))
+    res.render('cart', { products, user, total, categories, offTotal, discount })
   } else {
     res.render('empty-cart', { user, categories })
   }
@@ -250,7 +254,7 @@ router.get('/cart', verifyLogin, async (req, res) => {
 router.post('/change-product-quantity', (req, res, next) => {
   userHelper.changeProductQuantity(req.body).then(async (response) => {
     if (response.status) {
-      let total = await userHelper.getTotalAmount(req.body.user)
+      let total = await userHelper.getOfferTotalAmount(req.body.user)
       response.total = total
     }
     res.json(response)
@@ -290,7 +294,7 @@ router.get('/place-order', verifyLogin, async (req, res) => {
   let coupons = await adminHelper.getAllCoupons()
   let total = 0
   if (products.length > 0) {
-    total = await userHelper.getTotalAmount(req.session.username._id)
+    total = await userHelper.getOfferTotalAmount(req.session.username._id)
     let user = req.session.username
     res.render('place-order', { user, total, categories, address, coupons })
   } else {
@@ -307,7 +311,7 @@ router.post('/place-order', async (req, res) => {
       totalPrice = req.session.total
       console.log(totalPrice);
     } else {
-      totalPrice = await userHelper.getTotalAmount(req.body.userId)
+      totalPrice = await userHelper.getOfferTotalAmount(req.body.userId)
     }
     req.session.coupon = null
     userHelper.placeOrder(req.body, products, totalPrice).then((orderId) => {

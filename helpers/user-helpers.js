@@ -375,17 +375,56 @@ module.exports = {
             resolve(total[0].total)
         })
     },
-////////////////////////////////////////////////////COUPON/////////////////////////////////////////////////////////////////
 
-getCouponDetails:(details)=>{
-    return new Promise(async(resolve,reject)=>{
-      let couponDetails = await db.get().collection(collection.COUPON_COLLECTION).findOne({couponName:details.couponName})
-      resolve(couponDetails)
-    })
-},
+    getOfferTotalAmount: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let total = await db.get().collection(collection.CART_COLLECTION).aggregate([
+                {
+                    $match: { user: objectId(userId) }
+                },
+                {
+                    $unwind: '$products'
+                },
+                {
+                    $project: {
+                        item: '$products.item',
+                        quantity: '$products.quantity'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: collection.PRODUCT_COLLECTION,
+                        localField: 'item',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $project: {
+                        item: 1, quantity: 1, products: { $arrayElemAt: ['$product', 0] }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: { $multiply: ['$quantity', { $toInt: '$products.offPrice' }] } }
+                    }
+                }
+            ]).toArray()
+            resolve(total[0].total)
+        })
+    },
+    ////////////////////////////////////////////////////COUPON/////////////////////////////////////////////////////////////////
+
+    getCouponDetails: (details) => {
+        return new Promise(async (resolve, reject) => {
+            let couponDetails = await db.get().collection(collection.COUPON_COLLECTION).findOne({ couponName: details.couponName })
+            resolve(couponDetails)
+        })
+    },
 
 
-/////////////////////////////////////////////////////COUPON END///////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////COUPON END///////////////////////////////////////////////////////////
 
 
 
@@ -408,7 +447,7 @@ getCouponDetails:(details)=>{
                 date: new Date()
             }
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
-                if (order["payment-method"] == 'COD'|| 'PAYPAL') {
+                if (order["payment-method"] == 'COD' || 'PAYPAL') {
                     db.get().collection(collection.CART_COLLECTION).remove({ user: objectId(order.userId) })
                 }
 

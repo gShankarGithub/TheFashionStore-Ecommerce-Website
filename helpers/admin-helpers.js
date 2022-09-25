@@ -4,6 +4,7 @@ var objectId = require('mongodb').ObjectId
 module.exports = {
 
     addProduct: (product, callback) => {
+        product.offPrice = parseInt(product.price,10)
         db.get().collection(collection.PRODUCT_COLLECTION).insertOne(product).then((data) => {
             callback(data.insertedId)
         })
@@ -81,8 +82,9 @@ module.exports = {
            resolve(coupons)
         })
     },
-
+/////////////////////////////////////CATEGORY/////////////////////////////////////////////////
     addCategory: (category, callback) => {
+        category.offer = 0
         db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {
             callback(data.insertedId)
         })
@@ -100,6 +102,32 @@ module.exports = {
             })
         })
     },
+
+    changeCategoryOffer:(categoryDetails) =>{
+        return new Promise(async(resolve,reject)=>{
+            await db.get().collection(collection.CATEGORY_COLLECTION).updateOne({_id:objectId(categoryDetails.categoryId)},{
+                $set:{
+                    offer:categoryDetails.offer
+                }
+            }).then((response)=>{
+                resolve()
+            })
+        })
+    },
+
+    updateOffPrice:(proId,price)=>{
+        return new Promise(async(resolve,reject)=>{
+            await db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:objectId(proId)},{
+                $set:{
+                    offPrice: price  
+                }
+            }).then(()=>{
+                resolve()
+            })
+        })
+    },
+
+    ////////////////////////////////END CATEGORY////////////////////////////////////////
     deleteProduct: (productId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.PRODUCT_COLLECTION).remove({ _id: objectId(productId) }).then((response) => {
@@ -123,7 +151,7 @@ module.exports = {
                     price: productDetails.price,
                     description: productDetails.description
                 }
-            }).then((response) => {
+            }).then(() => {
                 resolve()
             })
         })
