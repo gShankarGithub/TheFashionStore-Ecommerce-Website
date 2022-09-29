@@ -1,14 +1,16 @@
 <style>
-    #borderCard{
-        border-color: tomato;
+
+    .shop {
+        background-color: #f6fff8
+
     }
 </style>
-<section>
+<section class="shop py-5">
     <div class="container py-5">
         <div class="row">
             {{#each products}}
-            <div class="col-md-6 col-lg-3 mb-4 mb-md-0 mt-3 bg-image hover-zoom">
-                <div class="border border-1  rounded-2 card ">
+            <div class="col-md-6 col-lg-3 mb-4 mb-md-0 mt-3 bg-image ">
+                <div class="border border-2  rounded-2 card ">
                     {{!-- <div class="d-flex justify-content-between p-3">
                         <p class="lead mb-0">Today's Combo Offer</p>
                         <div class="bg-info rounded-circle d-flex align-items-center justify-content-center shadow-1-strong"
@@ -17,22 +19,24 @@
                         </div>
                     </div> --}}
                     <a class="text-center mt-1" href="/shop/product-details/{{this._id}}">
-                    <div class="bg-image hover-zoom">
-                        <img src="/product-images/{{this._id}}.jpg" alt="Image" style="width:auto;height: 200px;" />
-                    </div>
+                        <div class="bg-image hover-zoom">
+                            <img src="/product-images/{{this._id}}.jpg" alt="Image" style="width:auto;height: 200px;" />
+                        </div>
                     </a>
 
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
-                            <p class="small"><a href="#!" class="text-muted">{{this.category}}</a></p>
-                            <p class="small text-danger"><s>₹ 2000</s></p>
+                            <p class=" small"><a href="#!" class="text-success">{{this.category}}</a></p>
+                            {{#unlessEquals this.price this.offPrice}}
+                            <p class="small text-danger"><s>₹ {{this.price}}</s></p>
+                            {{/unlessEquals}}
                         </div>
 
                         <div class="d-flex justify-content-between mb-3">
-                            <h5 class="mb-0">{{this.pName}}</h5> <br>
+                            <h6 class="mb-0">{{this.pName}}</h6> <br>
                         </div>
                         <div class="d-flex justify-content-end mb-3">
-                            <h5 class="text-dark mb-0">₹ {{this.price}}</h5>
+                            <h6 class="text-dark mb-0">₹ {{this.offPrice}}</h6>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <p class="text-muted mb-0">Available: <span class="fw-bold">5</span></p>

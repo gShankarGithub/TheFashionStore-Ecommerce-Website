@@ -1,5 +1,11 @@
+<style>
+    .adminProducts{
+        padding-top: 50px;
+        padding-bottom: 100px;
+    }
+</style>
 
-<section>
+<section class="adminProducts">
     <div class="container-fluid">
         <div class="row">
             <div class="container d-flex justify-content-end mt-2 mb-1">
@@ -28,10 +34,11 @@
                         <td>{{this.description}}</td>
                         <td>{{this.price}}</td>
                         <td><img style="width: 50px;height: 50px;" src="/product-images/{{this._id}}.jpg" alt=""></td>
-                        <td  class="text-center productButton"><a href="/admin/products/edit-product/{{this._id}}"
+                        <td class="text-center productButton"><a href="/admin/products/edit-product/{{this._id}}"
                                 class="btn btn-primary" style="background-color: #00b74a;">Edit</a>
                             <a href="/admin/products/delete-product/{{this._id}}" class="btn btn-danger"
-                                onclick="return confirm('Are you sure you want to delete {{this.pName}}')" style="background-color: #f93154;">Delete</a>
+                                onclick="return confirm('Are you sure you want to delete {{this.pName}}')"
+                                style="background-color: #f93154;">Delete</a>
                         </td>
                     </tr>
                     {{/each}}
@@ -45,6 +52,10 @@
 <script>
     $(document).ready(function () {
         $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
             responsive: {
                 details: {
                     display: $.fn.dataTable.Responsive.display.modal({

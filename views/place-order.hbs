@@ -49,7 +49,7 @@
         display: block;
     }
 </style>
-<section class="h-100 " style="background-color: #d2c9ff;">
+<section style="background-color: #d2c9ff; padding-top: 80px; padding-bottom: 80px;">
     <div class="container py-2 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12">
@@ -168,12 +168,12 @@
                                         <input name="couponName" type="text">
                                         <a onclick="addCoupon()" class="btn btn-primary ms-2">Apply</a>
                                     </div>
-                                    <span id="errorCoupon"></span>
+                                    <span class="text-danger" id="errorCoupon"></span>
                                     <hr class="mt-2 mb-4">
 
                                     <div class="d-flex justify-content-between mb-5">
-                                        <h5 class="text-uppercase">Total price in ₹ </h5>
-                                        <h5 id="totalAmount">{{total}}</h5>
+                                        <h5 class="text-uppercase">Total</h5>
+                                        <h5>₹ <span id="totalAmount">{{total}}</span></h5>
                                     </div>
                                     <div class="clr mt-4" id="paypal"></div>
                                     <div class="clr" id="checkout-button">
@@ -229,13 +229,19 @@
                 total: total
             },
             method: 'post',
-            success: (total) => {
-                if (total) {
-                    console.log(total)
-                    document.getElementById('totalAmount').innerText = total
-                } else {
-                    console.log("ELSE")
-                    error.innerHTML = "Coupon Not Available"
+            success: (response) => {
+                if (response.total) {
+                    errorCoupon.innerHTML = ""
+                    document.getElementById('totalAmount').innerText = response.total
+                } else if (response.noCoupon) {
+                    errorCoupon.innerHTML = "No Coupon"
+                    document.getElementById('totalAmount').innerText = response.ogTotal
+                }else if(response.exist){
+                    errorCoupon.innerHTML = "Coupon Already Exist"
+                    document.getElementById('totalAmount').innerText = response.ogTotal
+                }
+                else {
+                    errorCoupon.innerHTML = "Coupon Not Available"
                 }
 
             }
@@ -259,7 +265,7 @@
             return actions.order.create({
                 purchase_units: [{
                     amount: {
-                        value: {{total}} // Can also reference a variable or function
+                        value: document.getElementById('totalAmount').innerText // Can also reference a variable or function
                     }
     }]
             });

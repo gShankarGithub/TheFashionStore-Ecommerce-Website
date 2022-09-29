@@ -4,7 +4,7 @@ var objectId = require('mongodb').ObjectId
 module.exports = {
 
     addProduct: (product, callback) => {
-        product.offPrice = parseInt(product.price,10)
+        product.offPrice = parseInt(product.price, 10)
         db.get().collection(collection.PRODUCT_COLLECTION).insertOne(product).then((data) => {
             callback(data.insertedId)
         })
@@ -70,24 +70,31 @@ module.exports = {
     addCoupon: (couponData) => {
         couponData.status = "ACTIVE"
         return new Promise(async (resolve, reject) => {
-            db.get().collection(collection.COUPON_COLLECTION).insertOne(couponData).then(()=>{
+            db.get().collection(collection.COUPON_COLLECTION).insertOne(couponData).then(() => {
                 resolve()
             })
         })
     },
 
-    getAllCoupons:()=>{
-        return new Promise(async(resolve, reject)=>{
-           let coupons = await db.get().collection(collection.COUPON_COLLECTION).find().toArray()
-           resolve(coupons)
+    getAllCoupons: () => {
+        return new Promise(async (resolve, reject) => {
+            let coupons = await db.get().collection(collection.COUPON_COLLECTION).find().toArray()
+            resolve(coupons)
         })
     },
-/////////////////////////////////////CATEGORY/////////////////////////////////////////////////
-    addCategory: (category, callback) => {
-        category.offer = 0
-        db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {
-            callback(data.insertedId)
-        })
+    /////////////////////////////////////CATEGORY/////////////////////////////////////////////////
+    addCategory: async (category, callback) => {
+        let catExist = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({ categoryName: category.categoryName })
+        if (catExist) {
+            let catErr = "EXIST"
+            callback(catErr)
+        } else {
+            category.offer = 0
+            db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {
+                callback(data.insertedId)
+            })
+        }
+
     },
     getAllCategory: () => {
         return new Promise(async (resolve, reject) => {
@@ -103,25 +110,25 @@ module.exports = {
         })
     },
 
-    changeCategoryOffer:(categoryDetails) =>{
-        return new Promise(async(resolve,reject)=>{
-            await db.get().collection(collection.CATEGORY_COLLECTION).updateOne({_id:objectId(categoryDetails.categoryId)},{
-                $set:{
-                    offer:categoryDetails.offer
+    changeCategoryOffer: (categoryDetails) => {
+        return new Promise(async (resolve, reject) => {
+            await db.get().collection(collection.CATEGORY_COLLECTION).updateOne({ _id: objectId(categoryDetails.categoryId) }, {
+                $set: {
+                    offer: categoryDetails.offer
                 }
-            }).then((response)=>{
+            }).then((response) => {
                 resolve()
             })
         })
     },
 
-    updateOffPrice:(proId,price)=>{
-        return new Promise(async(resolve,reject)=>{
-            await db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:objectId(proId)},{
-                $set:{
-                    offPrice: price  
+    updateOffPrice: (proId, price) => {
+        return new Promise(async (resolve, reject) => {
+            await db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: objectId(proId) }, {
+                $set: {
+                    offPrice: price
                 }
-            }).then(()=>{
+            }).then(() => {
                 resolve()
             })
         })
@@ -159,7 +166,15 @@ module.exports = {
 
     getAllTheOrders: () => {
         return new Promise(async (resolve, reject) => {
-            let orders = await db.get().collection(collection.ORDER_COLLECTION).find().toArray()
+            let orders = await db.get().collection(collection.ORDER_COLLECTION).find().sort({date:-1}).toArray()
+            resolve(orders)
+        })
+
+    },
+
+    getAllDelieveredOrders: () => {
+        return new Promise(async (resolve, reject) => {
+            let orders = await db.get().collection(collection.ORDER_COLLECTION).find({status:delivered}).toArray()
             resolve(orders)
         })
 

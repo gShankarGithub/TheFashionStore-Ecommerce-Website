@@ -6,6 +6,12 @@
         flex-direction: column;
 
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 </style>
 
 <section>
@@ -16,11 +22,11 @@
                 role="tab" aria-controls="ex-with-icons-tabs-1" aria-selected="true"><i
                     class="fas fa-chart-pie fa-fw me-2"></i>Category Management</a>
         </li>
-        <li class="nav-item" role="presentation">
+        {{!-- <li class="nav-item" role="presentation">
             <a class="nav-link" id="ex-with-icons-tab-2" data-mdb-toggle="tab" href="#ex-with-icons-tabs-2" role="tab"
                 aria-controls="ex-with-icons-tabs-2" aria-selected="false"><i
                     class="fas fa-chart-line fa-fw me-2"></i>Category Offers</a>
-        </li>
+        </li> --}}
         {{!-- <li class="nav-item" role="presentation">
             <a class="nav-link" id="ex-with-icons-tab-3" data-mdb-toggle="tab" href="#ex-with-icons-tabs-3" role="tab"
                 aria-controls="ex-with-icons-tabs-3" aria-selected="false"><i
@@ -33,9 +39,12 @@
     <div class="tab-content" id="ex-with-icons-content">
         <div class="tab-pane fade show active" id="ex-with-icons-tabs-1" role="tabpanel"
             aria-labelledby="ex-with-icons-tab-1">
-            <div class="container">
+            <div class="container my-2">
                 <div class="row">
-                    <div class="container d-flex justify-content-end mt-2 mb-1">
+                    {{#if exist}}
+                    <span class="text-danger">Category Name Already Exist, Try Another One</span>
+                    {{/if}}
+                    <div class="container d-flex mt-2 mb-1">
                         <a class="btn btn-success" data-toggle="collapse" href="#collapseExample" role="button"
                             aria-expanded="false" aria-controls="collapseExample">
                             Add Category
@@ -62,7 +71,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <table id="example" class="table table-striped nowrap" style="width:100%">
+                    <table id="categoryDatatable" class="table table-striped nowrap" style="width:100%">
                         <thead>
                             <tr>
                                 <th scope="col">No</th>
@@ -80,15 +89,20 @@
                                 <td>{{this.categoryName}}</td>
                                 <td>{{this.description}}</td>
                                 <td>
-                                    <div class="inline-block">
-                                        <form action="/admin/change-category-offer" method="post">
-                                            <input name="offer" value="{{this.offer}}" type="number">
-                                            <input type="text" value="{{this._id}}" name="categoryId" hidden>
-                                            <input type="text" value="{{this.categoryName}}" name="categoryName" hidden>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        </form>
-                                    </div>
 
+                                    <form action="/admin/change-category-offer" method="post">
+                                        <div class="d-flex">
+                                            <div class="form-group">
+                                                <input name="offer" class="form-control" value="{{this.offer}}"
+                                                    type="number">
+                                            </div>
+                                            <div class="form-group ms-2">
+                                                <button type="submit" class="btn btn-primary form-control">Submit</button>
+                                            </div>
+                                        </div>
+                                        <input type="text" value="{{this._id}}" name="categoryId" hidden>
+                                        <input type="text" value="{{this.categoryName}}" name="categoryName" hidden>
+                                    </form>
                                 </td>
                                 <td><img style="width: 50px;height: 50px;" src="/category-images/{{this._id}}.jpg"
                                         alt=""></td>
@@ -108,11 +122,12 @@
 
             </div>
         </div>
-        <div class="tab-pane fade" id="ex-with-icons-tabs-2" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
+        {{!-- <div class="tab-pane fade" id="ex-with-icons-tabs-2" role="tabpanel"
+            aria-labelledby="ex-with-icons-tab-2">
             <div class="container">
 
             </div>
-        </div>
+        </div> --}}
         {{!-- <div class="tab-pane fade" id="ex-with-icons-tabs-3" role="tabpanel"
             aria-labelledby="ex-with-icons-tab-3">
             Tab 3 content
@@ -123,7 +138,11 @@
 
 <script>
     $(document).ready(function () {
-        $('#example').DataTable({
+        $('#categoryDatatable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
             responsive: {
                 details: {
                     display: $.fn.dataTable.Responsive.display.modal({

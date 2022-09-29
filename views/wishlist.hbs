@@ -1,10 +1,11 @@
 <style>
     /* We’ll set some colors and center everything. */
-    .element { 
+    .element {
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
     }
+
     .texter {
         background: #231738;
         color: #99eeb4;
@@ -69,20 +70,26 @@
         <div class="row">
             {{#each products}}
             <div class="col-sm-3 ">
-                <div class="container h-90 mt-5">
+                <div class="container mt-5">
                     <div class="h-auto card border border-3 p-2 bg-white">
-                        <a data-toggle="tooltip" data-placement="top" title="Remove From Wishlist" role="button" onclick="deleteFromWishlist('{{this.products._id}}')"><i class="fa fa-trash"
+                        <a data-toggle="tooltip" data-placement="top" title="Remove From Wishlist" role="button"
+                            onclick="deleteFromWishlist('{{this.products._id}}')"><i class="fa fa-trash"
                                 aria-hidden="true"></i></a>
-                        <div class="text-center mt-2"><img src="/product-images/{{this.products._id}}.jpg" height="auto"
-                                width="200px">
-
+                        </a>
+                        <div class="text-center mt-2">
+                            <div class="bg-image hover-zoom">
+                                <a href="/shop/product-details/{{this._id}}">
+                                    <img src="/product-images/{{this.products._id}}.jpg" height="auto" width="200px">
+                                </a>
+                            </div>
                             <div>
-                                <h4>{{this.products.pName}}</h4>
+                                <h5>{{this.products.pName}}</h5>
                                 <h6 class="element mt-0 text-black-50">{{this.products.description}}</h6>
                             </div>
                         </div>
                         <div class="d-flex justify-content-between total font-weight-bold mt-4">
-                            <button onclick="addToCart('{{this.products._id}}')" class="btn btn-dark">Add to cart </button><span>₹ {{this.products.price}}</span>
+                            <button onclick="addToCart('{{this.products._id}}')" class="btn btn-dark">Add to cart
+                            </button><span>₹ {{this.products.price}}</span>
                         </div>
                     </div>
                 </div>

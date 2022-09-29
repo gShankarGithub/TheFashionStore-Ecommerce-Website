@@ -1,4 +1,3 @@
-
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <section>
     <div class="container-fluid">
@@ -33,11 +32,13 @@
                             <td class="text-center">{{this.paymentMethod}}</td>
                             <td class="text-center">{{this.status}}</td>
                             <td class="text-center">
-                                <a href="/orders/products/{{this._id}}" class="btn btn-success" style="background-color: #00b74a;">All Products</a>
+                                <a href="/orders/products/{{this._id}}" class="btn btn-success"
+                                    style="background-color: #00b74a;">All Products</a>
                                 <br><br>
                                 {{#unlessEquals this.status 'cancelled'}}
                                 {{#unlessEquals this.status 'delivered'}}
-                                <a href="/orders/cancel-order/{{this._id}}" class="btn btn-danger" style="background-color: #f93154;">Cancel Order</a>
+                                <a href="/orders/cancel-order/{{this._id}}" class="btn btn-danger"
+                                    style="background-color: #f93154;">Cancel Order</a>
                                 {{/unlessEquals}}
                                 {{/unlessEquals}}
                             </td>
@@ -52,8 +53,8 @@
 <script>
     $(document).ready(function () {
         $('#example').DataTable({
-            "order": [[ 0, "desc" ]],
-            "columnDefs" : [{"targets":0, "type":"date-eu"}],
+            "order": [[0, "desc"]],
+            "columnDefs": [{ "targets": 0, "type": "date-eu" }],
             responsive: {
                 details: {
                     display: $.fn.dataTable.Responsive.display.modal({

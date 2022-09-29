@@ -39,6 +39,7 @@ router.get('/', async (req, res, next) => {
     let usersCount = await adminHelper.getUsersCount()
     let ordersCount = await adminHelper.getOrdersCount()
     let productsCount = await adminHelper.getProductsCount()
+    let orders = await adminHelper.getAllTheOrders()
     let total = await adminHelper.getTotalAmountOrders()
     let weeks = await adminHelper.getWeeks()
     let months = await adminHelper.getMonths()
@@ -64,7 +65,7 @@ router.get('/', async (req, res, next) => {
       yearYAxis.push(val.count)
       yearXAxis.push(val._id)
     }
-    res.render('admin', { admin: true, usersCount, ordersCount, productsCount, total, weekYAxis, weekXAxis, monthXAxis, monthYAxis, yearXAxis, yearYAxis })
+    res.render('admin', { admin: true, usersCount, ordersCount, productsCount,orders, total, weekYAxis, weekXAxis, monthXAxis, monthYAxis, yearXAxis, yearYAxis })
   } else {
     res.redirect('/admin/login')
   }
@@ -236,14 +237,21 @@ router.post('/categories/addcategory', (req, res) => {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
   if (req.session.admin == true) {
     adminHelper.addCategory(req.body, (id) => {
-      let image = req.files.cImage
-      image?.mv('./public/category-images/' + id + '.jpg', (err, done) => {
-        if (!err) {
-          res.redirect("/admin/categories")
-        } else {
-          console.log(err);
-        }
-      })
+      if (id == "EXIST") {
+        req.session.categoryExist = true
+        console.log('EXISTESH');
+                res.redirect("/admin/categories")
+      } else {
+        let image = req.files.cImage
+        image?.mv('./public/category-images/' + id + '.jpg', (err, done) => {
+          if (!err) {
+            res.redirect("/admin/categories")
+          } else {
+            console.log(err);
+          }
+        })
+      }
+
     })
   } else {
     res.redirect('/admin/login')
@@ -253,8 +261,13 @@ router.post('/categories/addcategory', (req, res) => {
 router.get('/categories', (req, res) => {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
   if (req.session.admin == true) {
+    let exist = false
     adminHelper.getAllCategory().then((category) => {
-      res.render('admin-categories', { admin: true, category })
+      if (req.session.categoryExist){
+        exist = req.session.categoryExist     
+      }
+      req.session.categoryExist = null
+      res.render('admin-categories', { admin: true, category,exist })
     })
   } else {
     res.redirect('/admin/login')
@@ -268,18 +281,18 @@ router.get('/categories/delete-category/:id', (req, res) => {
   })
 })
 
-router.post('/change-category-offer',(req,res)=>{
+router.post('/change-category-offer', (req, res) => {
   let details = req.body
   let offer = details.offer
-  adminHelper.changeCategoryOffer(details).then(async()=>{
-   let products = await userHelper.findProductCategory(details.categoryName)
-   for (val of products){
-    val.offPrice = val.price
-    let price = Math.round(Number(val.offPrice-(val.offPrice * offer)/100))
-    console.log(price);
-    await adminHelper.updateOffPrice(val._id,price)
-   }
-   res.redirect('/admin/categories')
+  adminHelper.changeCategoryOffer(details).then(async () => {
+    let products = await userHelper.findProductCategory(details.categoryName)
+    for (val of products) {
+      val.offPrice = val.price
+      let price = Math.round(Number(val.offPrice - (val.offPrice * offer) / 100))
+      console.log(price);
+      await adminHelper.updateOffPrice(val._id, price)
+    }
+    res.redirect('/admin/categories')
   })
 })
 

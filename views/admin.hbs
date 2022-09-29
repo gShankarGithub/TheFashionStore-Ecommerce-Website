@@ -3,7 +3,7 @@
   integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
   crossorigin="anonymous" referrerpolicy="no-referrer" />
 <section>
-  <div class="container" >
+  <div class="container">
 
     <div class="row pt-5">
       <div class="col-6 col-md-3">
@@ -102,6 +102,7 @@
 </section>
 
 <script>
+
   let finalWeek = []
   let week = [{{ weekXAxis }}]
   for (val of week) {
@@ -236,31 +237,31 @@
   var myBarChart = new Chart(ctxB, {
     type: 'bar',
     data: {
-      labels: [{{yearXAxis}}],
-      datasets: [{
-        label: '',
-        data: [{{yearYAxis}}],
+      labels: [{{ yearXAxis }}],
+    datasets: [{
+      label: '',
+      data: [{{ yearYAxis }}],
 
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)'
-      ],
-      borderColor: [
-        'rgba(255,99,132,1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)'
-      ],
-      borderWidth: 1
-    }]
+    backgroundColor: [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(255, 206, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(255, 159, 64, 0.2)'
+    ],
+    borderColor: [
+      'rgba(255,99,132,1)',
+      'rgba(54, 162, 235, 1)',
+      'rgba(255, 206, 86, 1)',
+      'rgba(75, 192, 192, 1)',
+      'rgba(153, 102, 255, 1)',
+      'rgba(255, 159, 64, 1)'
+    ],
+    borderWidth: 1
+  }]
   },
-    options: {
+  options: {
     scales: {
       yAxes: [{
         ticks: {
