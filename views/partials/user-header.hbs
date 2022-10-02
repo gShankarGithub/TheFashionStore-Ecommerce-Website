@@ -45,9 +45,9 @@
         background: linear-gradient(to right, #FFFFFF, #ECE9E6);
         /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
         font-size: large;
-
-
-
+    }
+    .dropdownEdit{
+        text-transform: capitalize;
     }
 </style>
 
@@ -70,7 +70,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <div class="dropdownEdit dropdown-menu" aria-labelledby="navbarDropdown">
                         {{#each categories}}
                         <a class="dropdown-item" href="/category/{{this.categoryName}}">{{this.categoryName}}</a>
                         {{/each}}

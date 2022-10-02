@@ -65,7 +65,7 @@ router.get('/', async (req, res, next) => {
       yearYAxis.push(val.count)
       yearXAxis.push(val._id)
     }
-    res.render('admin', { admin: true, usersCount, ordersCount, productsCount,orders, total, weekYAxis, weekXAxis, monthXAxis, monthYAxis, yearXAxis, yearYAxis })
+    res.render('admin', { admin: true, usersCount, ordersCount, productsCount, orders, total, weekYAxis, weekXAxis, monthXAxis, monthYAxis, yearXAxis, yearYAxis })
   } else {
     res.redirect('/admin/login')
   }
@@ -239,8 +239,7 @@ router.post('/categories/addcategory', (req, res) => {
     adminHelper.addCategory(req.body, (id) => {
       if (id == "EXIST") {
         req.session.categoryExist = true
-        console.log('EXISTESH');
-                res.redirect("/admin/categories")
+        res.redirect("/admin/categories")
       } else {
         let image = req.files.cImage
         image?.mv('./public/category-images/' + id + '.jpg', (err, done) => {
@@ -263,11 +262,11 @@ router.get('/categories', (req, res) => {
   if (req.session.admin == true) {
     let exist = false
     adminHelper.getAllCategory().then((category) => {
-      if (req.session.categoryExist){
-        exist = req.session.categoryExist     
+      if (req.session.categoryExist) {
+        exist = req.session.categoryExist
       }
       req.session.categoryExist = null
-      res.render('admin-categories', { admin: true, category,exist })
+      res.render('admin-categories', { admin: true, category, exist })
     })
   } else {
     res.redirect('/admin/login')
@@ -304,8 +303,7 @@ router.get('/orders', async (req, res) => {
     let orders = await adminHelper.getAllTheOrders()
     for (val of orders) {
       val.date = new Date(val.date).toLocaleDateString()
-    }
-    res.render('admin-orders', { admin: true, orders })
+    }    res.render('admin-orders', { admin: true, orders })
   } else {
     res.redirect('/admin/login')
   }

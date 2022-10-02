@@ -84,6 +84,7 @@ module.exports = {
     },
     /////////////////////////////////////CATEGORY/////////////////////////////////////////////////
     addCategory: async (category, callback) => {
+        category.categoryName = category.categoryName.toLowerCase()
         let catExist = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({ categoryName: category.categoryName })
         if (catExist) {
             let catErr = "EXIST"
@@ -144,9 +145,14 @@ module.exports = {
     },
     getProductDetails: (productId) => {
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: objectId(productId) }).then((product) => {
-                resolve(product)
-            })
+            try{
+                db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: objectId(productId) }).then((product) => {
+                    resolve(product)
+                })
+            } catch (err){
+                reject()
+                
+            }
         })
     },
     updateProduct: (productId, productDetails) => {
