@@ -425,62 +425,59 @@ module.exports = {
         })
     },
 
-    // checkIfCouponUsed: (userId, details) => {
-    //     return new Promise(async (resolve, reject) => {
-    //         let userOffer = await db.get().collection(collection.USEDCOUPON_COLLECTION).findOne({ user: objectId(userId) })
-    //         console.log(userOffer, 'here');
-    //         if (userOffer) {
-    //             if (userOffer.coupons.item == details) {
-    //                 console.log(userOffer.coupons.item);
-    //             } else {
+    checkIfCouponUsed: (couponId, userId) => {
+        let response = {}
+        let couponObj = {
+            item: objectId(couponId)
+        }
+        return new Promise(async (resolve, reject) => {
+            let userCoupon = await db.get().collection(collection.USEDCOUPON_COLLECTION).findOne({ user: objectId(userId) })
+            if (userCoupon) {
+                // let couponExist = userCoupon.coupons.findIndex(coupons => coupons.item == couponId)
+                let couponExist = await db.get().collection(collection.USEDCOUPON_COLLECTION).findOne({ user: objectId(userId), "coupons.item": couponId })
+                console.log(couponExist);
+                if (couponExist) {
+                    response.exist = true
+                    resolve(response)
+                } else {
+                    console.log();
+                    db.get().collection(collection.USEDCOUPON_COLLECTION).updateOne({ user: objectId(userId) },
+                        {
+                            $push: { coupons: couponObj }
+                        }
+                    ).then(() => {
+                        response.couponAdd = true
+                        resolve(response)
+                    })
+                }
+            } else {
+                let usedCouponObj = {
+                    user: objectId(userId),
+                    coupons: [couponObj]
+                }
+                db.get().collection(collection.USEDCOUPON_COLLECTION).insertOne(usedCouponObj).then(() => {
+                    response.couponAdd = true
+                    resolve(response)
+                })
+            }
+        })
+    },
 
-    //             }
-    //         } else {
-    //             resolve()
-    //         }
-    //     })
-    // },
-
-    // checkIfCouponUsed: (couponId, userId) => {
+    // addUserUsedCoupon: (couponId,userId) => {
     //     let response = {}
     //     let couponObj = {
     //         item: objectId(couponId)
     //     }
-    //     return new Promise(async (resolve, reject) => {
-    //         let userCoupon = await db.get().collection(collection.USEDCOUPON_COLLECTION).findOne({ user: objectId(userId) })
-    //         if (userCoupon) {
-    //             let couponExist = await db.get().collection(collection.USEDCOUPON_COLLECTION).findOne({'coupons.$.item':couponId})
-    //             console.log(couponExist);
-    //             if (couponExist != -1) {
-    //                 response.exist = true
-    //                 resolve(response)
-    //             } else {
-    //                 console.log();
-    //                 db.get().collection(collection.USEDCOUPON_COLLECTION).updateOne({ user: objectId(userId) },
-    //                     {
-    //                         $push: { coupons: couponObj }
-    //                     }
-    //                 ).then(() => {
-    //                     response.couponAdd = true
-    //                     resolve(response)
-    //                 })
-    //             }
-    //         } else {
-    //             let usedCouponObj = {
-    //                 user: objectId(userId),
-    //                 coupons: [couponObj]
-    //             }
-    //             db.get().collection(collection.USEDCOUPON_COLLECTION).insertOne(usedCouponObj).then(() => {
-    //                 response.couponAdd = true
-    //                 resolve(response)
-    //             })
-    //         }
+    //     let usedCouponObj = {
+    //         user: objectId(userId),
+    //         coupons: [couponObj]
+    //     }
+    //     return new Promise((resolve, reject) => {
+    //         db.get().collection(collection.USEDCOUPON_COLLECTION).insertOne(usedCouponObj).then(() => {
+    //             resolve()
+    //         })
     //     })
     // },
-
-    addUserUsedCoupon: () => {
-
-    },
 
     /////////////////////////////////////////////////////COUPON END///////////////////////////////////////////////////////////
 

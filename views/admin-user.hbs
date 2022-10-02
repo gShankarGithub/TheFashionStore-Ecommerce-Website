@@ -12,7 +12,7 @@
                         <tr>
                             <th scope="col">Username</th>
                             <th class="text-center" scope="col">Email</th>
-                            <th class="text-center" scope="col">Options</th>
+                            <th class="text-center notExport" scope="col">Options</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,7 +45,22 @@
         $('#example').DataTable({
             dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                {
+                    extend: 'excel',
+                    text: 'Excel',
+                    className: 'btn btn-default',
+                    exportOptions: {
+                        columns: ':not(.notExport)'
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    text: 'PDF',
+                    className: 'btn btn-default',
+                    exportOptions: {
+                        columns: ':not(.notExport)'
+                    }
+                }
             ],
             responsive: {
                 details: {

@@ -75,6 +75,13 @@ module.exports = {
             })
         })
     },
+    deleteCoupon: (couponId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.COUPON_COLLECTION).remove({ _id: objectId(couponId) }).then((response) => {
+                resolve(response)
+            })
+        })
+    },
 
     getAllCoupons: () => {
         return new Promise(async (resolve, reject) => {

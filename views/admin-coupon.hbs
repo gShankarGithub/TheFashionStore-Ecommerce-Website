@@ -29,8 +29,8 @@
                         <td class="text-center">
                             {{!-- <a href="/admin/products/edit-product/{{this._id}}" class="btn btn-primary">Edit</a>
                             --}}
-                            <a href="/admin/categories/delete-category/{{this._id}}" class="btn btn-danger"
-                                onclick="return confirm('Are you sure you want to delete {{this.categoryName}}')"
+                            <a href="/admin/coupon/delete-coupon/{{this._id}}" class="btn btn-danger"
+                                onclick="return confirm('Are you sure you want to delete {{this.couponName}}')"
                                 style="background-color: #f93154;">Delete</a>
                         </td>
                     </tr>
@@ -64,6 +64,10 @@
                             <label for="inputPercentage" class="form-label float-left">Discount In
                                 Percentage</label>
                             <input type="number" class="form-control" id="inputPercentage" name="percent" required>
+                        </div>
+                        <div class="mx-3 mb-3">
+                            <label for="inputMargin" class="form-label float-left">Discount From</label>
+                            <input type="number" class="form-control" id="inputMargin" name="discountMargin" required>
                         </div>
                         <div class="mx-3 mb-3">
                             <label for="inputExpDate" class="form-label float-left">Expiry Date</label>

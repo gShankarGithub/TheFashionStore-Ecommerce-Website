@@ -79,7 +79,7 @@
                                 <th scope="col">Description</th>
                                 <th scope="col">Offer - In Percentage </th>
                                 <th scope="col">Image</th>
-                                <th class="text-center" scope="col">Options</th>
+                                <th class="text-center notExport" scope="col">Options</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -97,7 +97,8 @@
                                                     type="number">
                                             </div>
                                             <div class="form-group ms-2">
-                                                <button type="submit" class="btn btn-primary form-control">Submit</button>
+                                                <button type="submit"
+                                                    class="btn btn-primary form-control">Submit</button>
                                             </div>
                                         </div>
                                         <input type="text" value="{{this._id}}" name="categoryId" hidden>
@@ -141,7 +142,22 @@
         $('#categoryDatatable').DataTable({
             dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                {
+                    extend: 'excel',
+                    text: 'Excel',
+                    className: 'btn btn-default',
+                    exportOptions: {
+                        columns: ':not(.notExport)'
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    text: 'PDF',
+                    className: 'btn btn-default',
+                    exportOptions: {
+                        columns: ':not(.notExport)'
+                    }
+                }
             ],
             responsive: {
                 details: {

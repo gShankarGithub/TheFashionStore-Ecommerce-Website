@@ -402,18 +402,43 @@ router.post('/apply-coupon', async (req, res) => {
       res.json(response)
     } else {
       let couponDetails = await userHelper.getCouponDetails(req.body)
+      console.log(couponDetails.expDate);
       if (couponDetails) {
-        // userHelper.checkIfCouponUsed(req.session.username._id,couponDetails._id)
-        let percent = parseInt(couponDetails.percent, 10)
-        let offer = req.body.total * percent / 100
-        let total = req.body.total - offer
-        response.total = total
-        req.session.total = total
-        req.session.coupon = true
-        res.json(response)
+        let todayDate = new Date().toISOString().split('T')[0]
+        if (couponDetails.expDate < todayDate) {
+          response.ogTotal = req.body.total
+          response.expired = true
+          res.json(response)
+        } else {
+          let margin = parseInt(couponDetails.discountMargin,10)
+          if(req.body.total > margin){
+            userHelper.checkIfCouponUsed(couponDetails._id, req.session.username._id).then((details) => {
+              if (details.couponAdd) {
+                let percent = parseInt(couponDetails.percent, 10)
+                let offer = req.body.total * percent / 100
+                let total = req.body.total - offer
+                response.total = total
+                response.discount = offer
+                response.ogTotal = req.body.total
+                req.session.total = total
+                req.session.coupon = true
+                res.json(response)
+              } else if (details.exist) {
+                response.ogTotal = req.body.total
+                response.used = true
+                res.json(response)
+              }
+            })
+          }else{
+            let amount = margin - req.body.total
+            response.ogTotal = req.body.total
+            response.limit = "Shop For ₹"+amount+" More To Avail Coupon"
+            res.json(response)
+          }
+        }
       } else {
         response.noExist = true
-        res.json(response.noExist)
+        res.json(response)
       }
     }
   } catch (error) {

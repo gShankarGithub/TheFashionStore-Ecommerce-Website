@@ -159,6 +159,13 @@ router.post('/coupon/add-coupon', (req, res) => {
   })
 })
 
+router.get('/coupon/delete-coupon/:id', (req, res) => {
+  let couponId = req.params.id
+  adminHelper.deleteCoupon(couponId).then((response) => {
+    res.redirect('/admin/coupon')
+  })
+})
+
 ////////////////////////////////Product//////////////////////////////////////////////
 router.get('/products', (req, res) => {
   res.setHeader('cache-control', 'private,no-cache,no-store,must-revalidate')
