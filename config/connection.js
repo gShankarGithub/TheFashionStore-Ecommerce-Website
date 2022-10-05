@@ -1,10 +1,12 @@
 const mongoClient = require('mongodb').MongoClient
+require("dotenv").config();
 const state={
     db:null
 }
-
+console.log(process.env.MONGODB_CONNECT);
+// 'mongodb://localhost:27017'
 module.exports.connect = function(done){
-    const url = 'mongodb://localhost:27017'
+    const url = process.env.MONGODB_CONNECT
     const dbname = 'thefashionstore'
 
     mongoClient.connect(url,(err,data)=>{
@@ -19,3 +21,4 @@ module.exports.connect = function(done){
 module.exports.get=function(){
     return state.db
 }
+

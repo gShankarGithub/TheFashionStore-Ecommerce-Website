@@ -15,6 +15,7 @@ db.connect((err)=>{
   if(err) console.log("Connection Error");
   else console.log("Connection Is Successfull");
 })
+
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
 
