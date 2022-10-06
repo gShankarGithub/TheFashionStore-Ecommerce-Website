@@ -8,7 +8,7 @@ const userHelpers = require('../helpers/user-helpers');
 const serviceSID = process.env.TWILIO_SERVICE_ID
 const accountSID = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
-const client = require('twilio')(accountSID, authToken)
+const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN)
 
 router.get('/error', (req, res) => {
   let adminLogin = true
